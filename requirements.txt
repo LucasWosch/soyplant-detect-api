@@ -1,0 +1,10 @@
+tensorflow~=2.19.0
+opencv-python~=4.11.0.86
+numpy~=2.0.2
+fastapi~=0.115.12
+uvicorn==0.23.0        # Servidor ASGI para rodar a API FastAPI
+pillow==8.4.0          # Para manipulação de imagens no formato PIL
+python-multipart
+
+
+keras~=3.9.2

@@ -5,8 +5,8 @@ from keras import layers, models
 
 # Caminhos ajustados em relação à localização do script
 current_dir = os.path.dirname(os.path.abspath(__file__))
-train_folder = os.path.join(current_dir, '../data/train')
-val_folder = os.path.join(current_dir, '../data/val')
+train_folder = os.path.join(current_dir, '../../data/train')
+val_folder = os.path.join(current_dir, '../../data/val')
 
 # Função para carregar imagens e rótulos
 def load_data(data_folder, image_size=(128, 128)):
@@ -62,4 +62,4 @@ model.summary()
 model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_val, y_val))
 
 # Salvando o modelo treinado
-model.save(os.path.join(current_dir, '../soyplant_cnn_model.h5'))
+model.save(os.path.join(current_dir, '../../../soyplant_cnn_model.h5'))

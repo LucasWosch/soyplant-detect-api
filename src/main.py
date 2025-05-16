@@ -9,29 +9,28 @@ from green_detector import detectar_objetos_verdes
 from feature_detector import detectar_harris, detectar_shi_tomasi
 from full_analysis import analisar_todos
 
-
-from predict import predict_image  # Certifique-se de que esse arquivo existe
+#from kerasTrain.predict import predict_image  # Certifique-se de que esse arquivo existe
 
 app = FastAPI()
 
-@app.post("/predict/")
-async def predict(file: UploadFile = File(...)):
-    try:
-        image_bytes = await file.read()
-        image = Image.open(BytesIO(image_bytes)).convert("RGB")
-
-        prediction = predict_image(image)
-        confidence = round(prediction * 100, 2)
-        label = "Pé de soja detectado" if prediction > 0.5 else "Nenhum pé de soja detectado"
-
-        return JSONResponse(content={
-            "label": label,
-            "confidence_percent": confidence,
-            "raw_prediction": round(prediction, 4)
-        })
-
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=400)
+# @app.post("/predict/")
+# async def predict(file: UploadFile = File(...)):
+#     try:
+#         image_bytes = await file.read()
+#         image = Image.open(BytesIO(image_bytes)).convert("RGB")
+#
+#         prediction = predict_image(image)
+#         confidence = round(prediction * 100, 2)
+#         label = "Pé de soja detectado" if prediction > 0.5 else "Nenhum pé de soja detectado"
+#
+#         return JSONResponse(content={
+#             "label": label,
+#             "confidence_percent": confidence,
+#             "raw_prediction": round(prediction, 4)
+#         })
+#
+#     except Exception as e:
+#         return JSONResponse(content={"error": str(e)}, status_code=400)
 
 
 @app.post("/count-objects/")

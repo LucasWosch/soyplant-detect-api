@@ -5,8 +5,8 @@ import os
 
 # Caminho da pasta de imagens
 current_dir = os.path.dirname(os.path.abspath(__file__))
-image_folder = os.path.join(current_dir, '../data/sobel_images')
-model_path = os.path.join(current_dir, '../soyplant_cnn_model.h5')
+image_folder = os.path.join(current_dir, '../../data/sobel_images')
+model_path = os.path.join(current_dir, '../../soyplant_cnn_model.h5')
 
 # Carregamento do modelo
 model = tf.keras.models.load_model(model_path)
@@ -42,8 +42,8 @@ import os
 
 # Caminho da pasta de imagens
 current_dir = os.path.dirname(os.path.abspath(__file__))
-image_folder = os.path.join(current_dir, '../data/sobel_images')
-model_path = os.path.join(current_dir, '../soyplant_cnn_model.h5')
+image_folder = os.path.join(current_dir, '../../data/sobel_images')
+model_path = os.path.join(current_dir, '../../soyplant_cnn_model.h5')
 
 # Carregamento do modelo
 model = tf.keras.models.load_model(model_path)

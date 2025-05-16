@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "dcf68607-bafc-458b-9dc6-b3c830591771",
+		"name": "TCC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20895368"
+	},
+	"item": [
+		{
+			"name": "DETECT",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0311ec-d751-4e30-af4b-94ff1da5b222"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/count-objects/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"count-objects",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OBJECT COUNTER",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0311ec-d751-4e30-af4b-94ff1da5b222"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/count-objects/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"count-objects",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GREEN DETECTOR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0311ec-d751-4e30-af4b-94ff1da5b222"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/count-green-objects/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"count-green-objects",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SHI TOMASI DETECTOR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0311ec-d751-4e30-af4b-94ff1da5b222"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/detect-shi-tomasi/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"detect-shi-tomasi",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HARRIS DETECTOR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0311ec-d751-4e30-af4b-94ff1da5b222"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/detect-harris/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"detect-harris",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FEATURE DETECTOR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0311ec-d751-4e30-af4b-94ff1da5b222"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/detect-features/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"detect-features",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ALL ANALYZE",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0311ec-d751-4e30-af4b-94ff1da5b222"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/analyze-all/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analyze-all",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

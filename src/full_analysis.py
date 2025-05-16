@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-def mostrar_reduzido(nome_janela, imagem, largura_fixa=200):
+def mostrar_reduzido(nome_janela, imagem, largura_fixa=500):
     altura, largura = imagem.shape[:2]
     proporcao = largura_fixa / float(largura)
     nova_altura = int(altura * proporcao)

@@ -11,6 +11,11 @@ from full_analysis import analisar_todos
 
 from kerasTrain.predict import predict_image  # Certifique-se de que esse arquivo existe
 
+from sklearnTrain.predict_count import prever_quantidade_soja
+from sklearnTrain.predict import prever_se_soja
+
+
+
 app = FastAPI()
 
 @app.post("/predict/")
@@ -29,6 +34,31 @@ async def predict(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
+@app.post("/predict-count/")
+async def predict_count(file: UploadFile = File(...)):
+    try:
+        image_bytes = await file.read()
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
+
+        resultado = prever_quantidade_soja(image)
+
+        return JSONResponse(content=resultado)
+
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+
+@app.post("/predict-soja/")
+async def predict_soja(file: UploadFile = File(...)):
+    try:
+        image_bytes = await file.read()
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
+
+        resultado = prever_se_soja(image)
+
+        return JSONResponse(content=resultado)
+
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
 
 @app.post("/count-objects/")
 async def count_objects(file: UploadFile = File(...)):

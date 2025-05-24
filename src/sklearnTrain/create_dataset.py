@@ -1,29 +1,39 @@
 import os
 import pandas as pd
 from PIL import Image
-from ..full_analysis import analisar_todos
+from full_analysis import analisar_todos  # ajuste conforme sua estrutura de pastas
 
-pasta_imagens = os.getenv('RAW_IMAGES_PATH')
+# Caminho das imagens e da planilha
+current_dir = os.path.dirname(os.path.abspath(__file__))
+pasta_imagens = "C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/DATASET/all_images"
+
+csv_path = os.path.join(current_dir, '../../data/Imagens.csv')
+df_labels = pd.read_csv(csv_path, sep=';')
+
 dados = []
 
-for nome_arquivo in os.listdir(pasta_imagens):
-    if nome_arquivo.endswith((".jpg", ".png")):
-        imagem_path = os.path.join(pasta_imagens, nome_arquivo)
-        imagem = Image.open(imagem_path).convert("RGB")
+for _, row in df_labels.iterrows():
+    nome_arquivo = row["nome_arquivo"]
+    label_binaria = row["soja"]
+    quantidade_soja = row["quantidade_soja"]
 
-        features = analisar_todos(imagem)
+    imagem_path = os.path.join(pasta_imagens, nome_arquivo)
+    if not os.path.exists(imagem_path):
+        print(f"Imagem não encontrada: {imagem_path}")
+        continue
 
-        # EX: definir a label baseado no nome do arquivo
-        label = 1 if "soja" in nome_arquivo.lower() else 0
+    imagem = Image.open(imagem_path).convert("RGB")
+    features = analisar_todos(imagem)
 
-        dados.append({
-            "arquivo": nome_arquivo,
-            "shi_tomasi": features["shi_tomasi"],
-            "harris": features["harris"],
-            "contornos_verdes": features["contornos_verdes"],
-            "label": label
-        })
+    dados.append({
+        "arquivo": nome_arquivo,
+        "shi_tomasi": features["shi_tomasi"],
+        "harris": features["harris"],
+        "contornos_verdes": features["contornos_verdes"],
+        "soja": label_binaria,
+        "quantidade_soja": quantidade_soja
+    })
 
-# Salvar como CSV
+# Salvar novo dataset com features
 df = pd.DataFrame(dados)
-df.to_csv("dataset_soja.csv", index=False)
+df.to_csv("dataset_soja_features.csv", index=False)

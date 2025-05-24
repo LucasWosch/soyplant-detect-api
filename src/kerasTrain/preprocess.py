@@ -30,7 +30,7 @@ def apply_sobel(image_path):
 
 # Processar imagens
 for image_name in os.listdir(image_folder):
-    if image_name.lower().endswith(('.jpg', '.png')):
+    if image_name.lower().endswith(('.jpeg', '.jpg', '.png')):
         image_path = os.path.join(image_folder, image_name)
         sobel_image = apply_sobel(image_path)
 

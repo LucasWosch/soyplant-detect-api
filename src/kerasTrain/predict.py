@@ -1,13 +1,12 @@
 import os
 import cv2
 import numpy as np
-import tensorflow as tf
 from PIL import Image
-from keras import layers, models
+from keras import models
 
 # Caminho para o modelo
 current_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(current_dir, '../../soyplant_cnn_model.h5')
+model_path = os.path.join(current_dir, './soyplant_cnn_model.h5')
 
 # Carregamento do modelo
 model = models.load_model(model_path)

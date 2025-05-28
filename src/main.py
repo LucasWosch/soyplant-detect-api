@@ -7,12 +7,16 @@ import uvicorn
 from object_counter import contar_objetos_pil
 from green_detector import detectar_objetos_verdes
 from feature_detector import detectar_harris, detectar_shi_tomasi
-from full_analysis import analisar_todos
+from sklearnTrain.full_analysis import analisar_todos
 
 from kerasTrain.predict import predict_image  # Certifique-se de que esse arquivo existe
 
-from sklearnTrain.predict_count import prever_quantidade_soja
+# from sklearnTrain.predict_count import prever_quantidade_soja
+from sklearnTrain.full_analysis import analisar_todos
 from sklearnTrain.predict import prever_se_soja
+from cnnTrain.predict import prever_com_cnn
+from cnnTrain.predict import prever_quantidade_cnn
+
 
 
 
@@ -34,18 +38,18 @@ async def predict(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
-@app.post("/predict-count/")
-async def predict_count(file: UploadFile = File(...)):
-    try:
-        image_bytes = await file.read()
-        image = Image.open(BytesIO(image_bytes)).convert("RGB")
-
-        resultado = prever_quantidade_soja(image)
-
-        return JSONResponse(content=resultado)
-
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=400)
+# @app.post("/predict-count/")
+# async def predict_count(file: UploadFile = File(...)):
+#     try:
+#         image_bytes = await file.read()
+#         image = Image.open(BytesIO(image_bytes)).convert("RGB")
+#
+#         resultado = prever_quantidade_soja(image)
+#
+#         return JSONResponse(content=resultado)
+#
+#     except Exception as e:
+#         return JSONResponse(content={"error": str(e)}, status_code=400)
 
 @app.post("/predict-soja/")
 async def predict_soja(file: UploadFile = File(...)):
@@ -59,6 +63,30 @@ async def predict_soja(file: UploadFile = File(...)):
 
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
+
+@app.post("/predict-cnn/")
+async def predict_cnn(file: UploadFile = File(...)):
+    try:
+        image_bytes = await file.read()
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
+
+        resultado = prever_com_cnn(image)
+
+        return JSONResponse(content=resultado)
+
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+
+@app.post("/predict-qty-cnn/")
+async def predict_qty_cnn(file: UploadFile = File(...)):
+    try:
+        image_bytes = await file.read()
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
+        resultado = prever_quantidade_cnn(image)
+        return JSONResponse(content=resultado)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+
 
 @app.post("/count-objects/")
 async def count_objects(file: UploadFile = File(...)):

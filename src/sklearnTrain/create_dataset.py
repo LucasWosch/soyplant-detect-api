@@ -5,10 +5,10 @@ from full_analysis import analisar_todos  # ajuste conforme sua estrutura de pas
 
 # Caminho das imagens e da planilha
 current_dir = os.path.dirname(os.path.abspath(__file__))
-pasta_imagens = "C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/DATASET/all_images"
+pasta_imagens = "C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/DATASET/all_images_v2"
 
-csv_path = os.path.join(current_dir, '../../data/Imagens.csv')
-df_labels = pd.read_csv(csv_path, sep=';')
+csv_path = os.path.join(current_dir, '../../data/ImagensV2.csv')
+df_labels = pd.read_csv(csv_path)
 
 dados = []
 

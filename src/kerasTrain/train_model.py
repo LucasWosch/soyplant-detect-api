@@ -46,7 +46,7 @@ X_val, y_val = load_data(val_folder, label_column='soja')
 X_train = X_train[..., np.newaxis]
 X_val = X_val[..., np.newaxis]
 
-# Modelo CNN atualizado
+# Modelo cnnTrain atualizado
 model = models.Sequential([
     layers.Input(shape=(128, 128, 1)),  # substitui InputLayer
     layers.Conv2D(32, (3, 3), activation='relu', padding='same'),

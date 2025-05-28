@@ -1,3 +1,4 @@
 venv/
 data/
 delete_imgs.py
+src/cnnTrain/temp_dataset

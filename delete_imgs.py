@@ -1,35 +1,23 @@
 import os
 import pandas as pd
 
-# Caminho para o CSV e a pasta com os arquivos
-caminho_csv = 'C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/Imagens de Validação.csv'  # CSV com a coluna 'nome_arquivo'
-pasta_alvo = 'C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/DATASET/Imagens Verdadeiro Positivo/valid'
+# Caminhos
+caminho_csv = 'C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/Imagens.csv'  # Ex: 'dados/arquivos.csv'
+pasta_arquivos = 'C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/DATASET/all_images v2'  # Ex: 'dados/imagens'
+caminho_saida = 'C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/ImagensV2.csv'  # Ex: 'dados/arquivo_filtrado.csv'
 
-# Lê o CSV e valida o separador correto
-try:
-    df = pd.read_csv(caminho_csv, sep=';')  # Ajuste para sep=',' se seu CSV usar vírgula
-except Exception as e:
-    print(f'Erro ao ler CSV: {e}')
-    exit()
+# Lê o CSV
+df = pd.read_csv(caminho_csv, sep=';')
 
-# Verifica se a coluna esperada existe
-if 'nome_arquivo' not in df.columns:
-    print("Erro: A coluna 'nome_arquivo' não foi encontrada no CSV.")
-    exit()
+# Verificar se os arquivos existem na pasta
+def arquivo_existe(nome_arquivo):
+    caminho_completo = os.path.join(pasta_arquivos, nome_arquivo)
+    return os.path.isfile(caminho_completo)
 
-# Cria um conjunto com os nomes dos arquivos permitidos
-arquivos_permitidos = set(df['nome_arquivo'].dropna().astype(str).str.strip())
+# Filtrar DataFrame
+df_filtrado = df[df['nome_arquivo'].apply(arquivo_existe)]
 
-# Lista arquivos existentes na pasta
-for arquivo in os.listdir(pasta_alvo):
-    caminho_arquivo = os.path.join(pasta_alvo, arquivo)
+# Salvar CSV resultante
+df_filtrado.to_csv(caminho_saida, index=False)
 
-    # Verifica se é arquivo (ignora subpastas)
-    if os.path.isfile(caminho_arquivo):
-        if arquivo not in arquivos_permitidos:
-            os.remove(caminho_arquivo)
-            print(f'Arquivo removido: {arquivo}')
-        else:
-            print(f'Arquivo mantido: {arquivo}')
-
-print("Processamento finalizado.")
+print(f'Arquivo salvo com {len(df_filtrado)} linhas em: {caminho_saida}')

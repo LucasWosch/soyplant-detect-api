@@ -14,6 +14,7 @@ from kerasTrain.predict import predict_image  # Certifique-se de que esse arquiv
 # from sklearnTrain.predict_count import prever_quantidade_soja
 from sklearnTrain.full_analysis import analisar_todos
 from sklearnTrain.predict import prever_se_soja
+from vggAnnotation.predict import detectar_soja_na_imagem
 from cnnTrain.predict import prever_com_cnn
 from cnnTrain.predict import prever_quantidade_cnn
 
@@ -50,6 +51,22 @@ async def predict(file: UploadFile = File(...)):
 #
 #     except Exception as e:
 #         return JSONResponse(content={"error": str(e)}, status_code=400)
+
+@app.post("/detect-soja-boxes/")
+async def detect_soja_boxes(file: UploadFile = File(...)):
+    try:
+        image_bytes = await file.read()
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
+
+        boxes = detectar_soja_na_imagem(image)
+
+        return JSONResponse(content={
+            "total_boxes_detectados": len(boxes),
+            "boxes": boxes
+        })
+
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
 
 @app.post("/predict-soja/")
 async def predict_soja(file: UploadFile = File(...)):
@@ -166,6 +183,20 @@ async def analyze_all(file: UploadFile = File(...)):
         image = Image.open(BytesIO(image_bytes)).convert("RGB")
 
         resultado = analisar_todos(image)
+
+        return JSONResponse(content=resultado)
+
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+
+
+@app.post("/detect-box/")
+async def detect_box(file: UploadFile = File(...)):
+    try:
+        image_bytes = await file.read()
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
+
+        resultado = detectar_soja_na_imagem(image)
 
         return JSONResponse(content=resultado)
 

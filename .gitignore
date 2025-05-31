@@ -2,3 +2,4 @@ venv/
 data/
 delete_imgs.py
 src/cnnTrain/temp_dataset
+src/vggAnnotation/soja_detector_model.keras

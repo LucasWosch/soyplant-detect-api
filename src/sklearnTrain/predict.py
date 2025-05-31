@@ -3,6 +3,7 @@ import os
 import joblib
 import numpy as np
 from full_analysis import analisar_todos
+from PIL import ImageDraw
 
 # Carregar o modelo de classificação salvo
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -27,3 +28,19 @@ def prever_se_soja(imagem_pil):
         "harris": features["harris"],
         "contornos_verdes": features["contornos_verdes"]
     }
+
+def detectar_soja_na_imagem(imagem_pil, window_size=(64, 64), step=32):
+    largura, altura = imagem_pil.size
+    draw = ImageDraw.Draw(imagem_pil)
+    boxes_detectadas = []
+
+    for y in range(0, altura - window_size[1], step):
+        for x in range(0, largura - window_size[0], step):
+            crop = imagem_pil.crop((x, y, x + window_size[0], y + window_size[1]))
+            resultado = prever_se_soja(crop)
+
+            if resultado["possui_soja"]:
+                boxes_detectadas.append(((x, y, x + window_size[0], y + window_size[1]), resultado["probabilidade_soja"]))
+                draw.rectangle([x, y, x + window_size[0], y + window_size[1]], outline="green", width=2)
+
+    return imagem_pil, boxes_detectadas

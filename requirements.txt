@@ -1,4 +1,4 @@
-tensorflow~=2.19.0
+tensorflow~=2.10.1
 opencv-python~=4.11.0.86
 numpy~=2.0.2
 fastapi~=0.115.12

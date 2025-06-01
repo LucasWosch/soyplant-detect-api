@@ -1,0 +1,1466 @@
+{
+    "_via_settings": {
+        "ui": {
+            "annotation_editor_height": 25,
+            "annotation_editor_fontsize": 0.8,
+            "leftsidebar_width": 18,
+            "image_grid": {
+                "img_height": 80,
+                "rshape_fill": "none",
+                "rshape_fill_opacity": 0.3,
+                "rshape_stroke": "yellow",
+                "rshape_stroke_width": 2,
+                "show_region_shape": true,
+                "show_image_policy": "all"
+            },
+            "image": {
+                "region_label": "__via_region_id__",
+                "region_color": "__via_default_region_color__",
+                "region_label_font": "10px Sans",
+                "on_image_annotation_editor_placement": "NEAR_REGION"
+            }
+        },
+        "core": {
+            "buffer_size": 18,
+            "filepath": {},
+            "default_filepath": ""
+        },
+        "project": {
+            "name": "via_project_29May2025_9h28m"
+        }
+    },
+    "_via_img_metadata": {
+        "IMG_20231002_143637_1_jpg.rf.bb5c0e5e1e81aa114b0e51356b6a5301.jpg123306": {
+            "filename": "IMG_20231002_143637_1_jpg.rf.bb5c0e5e1e81aa114b0e51356b6a5301.jpg",
+            "size": 123306,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 108,
+                        "y": 150,
+                        "width": 322,
+                        "height": 582
+                    },
+                    "region_attributes": {
+                        "soja": "soja"
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 429,
+                        "y": 144,
+                        "width": 358,
+                        "height": 570
+                    },
+                    "region_attributes": {
+                        "soja": "soja"
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_0174.JPEG809816": {
+            "filename": "IMG_0174.JPEG",
+            "size": 809816,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0175.JPEG823216": {
+            "filename": "IMG_0175.JPEG",
+            "size": 823216,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0176.JPEG800316": {
+            "filename": "IMG_0176.JPEG",
+            "size": 800316,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0177.JPEG1034385": {
+            "filename": "IMG_0177.JPEG",
+            "size": 1034385,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0178.JPEG1241935": {
+            "filename": "IMG_0178.JPEG",
+            "size": 1241935,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0179.JPEG1199714": {
+            "filename": "IMG_0179.JPEG",
+            "size": 1199714,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0180.JPEG1114142": {
+            "filename": "IMG_0180.JPEG",
+            "size": 1114142,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0181.JPEG1133664": {
+            "filename": "IMG_0181.JPEG",
+            "size": 1133664,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0182.JPEG1375234": {
+            "filename": "IMG_0182.JPEG",
+            "size": 1375234,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0183.JPEG1015091": {
+            "filename": "IMG_0183.JPEG",
+            "size": 1015091,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0184.JPEG1007153": {
+            "filename": "IMG_0184.JPEG",
+            "size": 1007153,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0185.JPEG965085": {
+            "filename": "IMG_0185.JPEG",
+            "size": 965085,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0186.JPEG1220129": {
+            "filename": "IMG_0186.JPEG",
+            "size": 1220129,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0187.JPEG950492": {
+            "filename": "IMG_0187.JPEG",
+            "size": 950492,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0188.JPEG1520472": {
+            "filename": "IMG_0188.JPEG",
+            "size": 1520472,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0189.JPEG1391355": {
+            "filename": "IMG_0189.JPEG",
+            "size": 1391355,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0190.JPEG1376276": {
+            "filename": "IMG_0190.JPEG",
+            "size": 1376276,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0191.JPEG1387553": {
+            "filename": "IMG_0191.JPEG",
+            "size": 1387553,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0192.JPEG1059166": {
+            "filename": "IMG_0192.JPEG",
+            "size": 1059166,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0193.JPEG1320123": {
+            "filename": "IMG_0193.JPEG",
+            "size": 1320123,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0194.JPEG942817": {
+            "filename": "IMG_0194.JPEG",
+            "size": 942817,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0195.JPEG1663336": {
+            "filename": "IMG_0195.JPEG",
+            "size": 1663336,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0196.JPEG1226737": {
+            "filename": "IMG_0196.JPEG",
+            "size": 1226737,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0197.JPEG1185842": {
+            "filename": "IMG_0197.JPEG",
+            "size": 1185842,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0198.JPEG1155872": {
+            "filename": "IMG_0198.JPEG",
+            "size": 1155872,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0199.JPEG1356906": {
+            "filename": "IMG_0199.JPEG",
+            "size": 1356906,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0200.JPEG1186857": {
+            "filename": "IMG_0200.JPEG",
+            "size": 1186857,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0201.JPEG1395416": {
+            "filename": "IMG_0201.JPEG",
+            "size": 1395416,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0202.JPEG1252156": {
+            "filename": "IMG_0202.JPEG",
+            "size": 1252156,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0203.JPEG1096088": {
+            "filename": "IMG_0203.JPEG",
+            "size": 1096088,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0204.JPEG1534906": {
+            "filename": "IMG_0204.JPEG",
+            "size": 1534906,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0205.JPEG1195417": {
+            "filename": "IMG_0205.JPEG",
+            "size": 1195417,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0206.JPEG1116175": {
+            "filename": "IMG_0206.JPEG",
+            "size": 1116175,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0207.JPEG1513822": {
+            "filename": "IMG_0207.JPEG",
+            "size": 1513822,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0208.JPEG1914616": {
+            "filename": "IMG_0208.JPEG",
+            "size": 1914616,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0209.JPEG1075007": {
+            "filename": "IMG_0209.JPEG",
+            "size": 1075007,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0210.JPEG918992": {
+            "filename": "IMG_0210.JPEG",
+            "size": 918992,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0211.JPEG865669": {
+            "filename": "IMG_0211.JPEG",
+            "size": 865669,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0212.JPEG986655": {
+            "filename": "IMG_0212.JPEG",
+            "size": 986655,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0213.JPEG1004719": {
+            "filename": "IMG_0213.JPEG",
+            "size": 1004719,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0214.JPEG1142663": {
+            "filename": "IMG_0214.JPEG",
+            "size": 1142663,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0215.JPEG1424231": {
+            "filename": "IMG_0215.JPEG",
+            "size": 1424231,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0216.JPEG1261218": {
+            "filename": "IMG_0216.JPEG",
+            "size": 1261218,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0217.JPEG1259721": {
+            "filename": "IMG_0217.JPEG",
+            "size": 1259721,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0218.JPEG1045686": {
+            "filename": "IMG_0218.JPEG",
+            "size": 1045686,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0219.JPEG1039065": {
+            "filename": "IMG_0219.JPEG",
+            "size": 1039065,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0220.JPEG1475585": {
+            "filename": "IMG_0220.JPEG",
+            "size": 1475585,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0221.JPEG1639470": {
+            "filename": "IMG_0221.JPEG",
+            "size": 1639470,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0222.JPEG1855297": {
+            "filename": "IMG_0222.JPEG",
+            "size": 1855297,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0223.JPEG1047786": {
+            "filename": "IMG_0223.JPEG",
+            "size": 1047786,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0224.JPEG1030354": {
+            "filename": "IMG_0224.JPEG",
+            "size": 1030354,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0225.JPEG956488": {
+            "filename": "IMG_0225.JPEG",
+            "size": 956488,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0226.JPEG1454090": {
+            "filename": "IMG_0226.JPEG",
+            "size": 1454090,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0227.JPEG1377245": {
+            "filename": "IMG_0227.JPEG",
+            "size": 1377245,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0228.JPEG1150129": {
+            "filename": "IMG_0228.JPEG",
+            "size": 1150129,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0229.JPEG1684359": {
+            "filename": "IMG_0229.JPEG",
+            "size": 1684359,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0230.JPEG1099597": {
+            "filename": "IMG_0230.JPEG",
+            "size": 1099597,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0231.JPEG1282744": {
+            "filename": "IMG_0231.JPEG",
+            "size": 1282744,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0232.JPEG1017722": {
+            "filename": "IMG_0232.JPEG",
+            "size": 1017722,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0233.JPEG1292342": {
+            "filename": "IMG_0233.JPEG",
+            "size": 1292342,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0234.JPEG1107540": {
+            "filename": "IMG_0234.JPEG",
+            "size": 1107540,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0235.JPEG1258294": {
+            "filename": "IMG_0235.JPEG",
+            "size": 1258294,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0236.JPEG1236207": {
+            "filename": "IMG_0236.JPEG",
+            "size": 1236207,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0237.JPEG1041610": {
+            "filename": "IMG_0237.JPEG",
+            "size": 1041610,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0238.JPEG1299855": {
+            "filename": "IMG_0238.JPEG",
+            "size": 1299855,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0239.JPEG1479911": {
+            "filename": "IMG_0239.JPEG",
+            "size": 1479911,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0240.JPEG1616005": {
+            "filename": "IMG_0240.JPEG",
+            "size": 1616005,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_0241.JPEG1379008": {
+            "filename": "IMG_0241.JPEG",
+            "size": 1379008,
+            "regions": [],
+            "file_attributes": {}
+        },
+        "IMG_20230925_101832_jpg.rf.22b1cf0fe2cf3ee2165bbb71aeaee71a.jpg381995": {
+            "filename": "IMG_20230925_101832_jpg.rf.22b1cf0fe2cf3ee2165bbb71aeaee71a.jpg",
+            "size": 381995,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 683,
+                        "y": 871,
+                        "width": 630,
+                        "height": 420
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20230925_101838_jpg.rf.00ac33759e17e019bdb55e8cacedd48b.jpg542839": {
+            "filename": "IMG_20230925_101838_jpg.rf.00ac33759e17e019bdb55e8cacedd48b.jpg",
+            "size": 542839,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 735,
+                        "y": 788,
+                        "width": 556,
+                        "height": 508
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20230925_101846_jpg.rf.72a9e9e4d5758704b664c16ea7c1ef1c.jpg980851": {
+            "filename": "IMG_20230925_101846_jpg.rf.72a9e9e4d5758704b664c16ea7c1ef1c.jpg",
+            "size": 980851,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 709,
+                        "y": 783,
+                        "width": 567,
+                        "height": 619
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20230925_101905_jpg.rf.8f7bfcc7088abf3cce4ce48cbec76ed9.jpg411614": {
+            "filename": "IMG_20230925_101905_jpg.rf.8f7bfcc7088abf3cce4ce48cbec76ed9.jpg",
+            "size": 411614,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 687,
+                        "y": 775,
+                        "width": 718,
+                        "height": 455
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20230925_101911_jpg.rf.37c50ddf3c8654fd1256d280d5c65913.jpg359256": {
+            "filename": "IMG_20230925_101911_jpg.rf.37c50ddf3c8654fd1256d280d5c65913.jpg",
+            "size": 359256,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 794,
+                        "y": 735,
+                        "width": 466,
+                        "height": 586
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20230925_102027_jpg.rf.2b55b225173e40d425574b303ab70031.jpg350178": {
+            "filename": "IMG_20230925_102027_jpg.rf.2b55b225173e40d425574b303ab70031.jpg",
+            "size": 350178,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 807,
+                        "y": 783,
+                        "width": 606,
+                        "height": 394
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20230926_145716_jpg.rf.63082a6102ebde3ac56fc6f149e3fc01.jpg941633": {
+            "filename": "IMG_20230926_145716_jpg.rf.63082a6102ebde3ac56fc6f149e3fc01.jpg",
+            "size": 941633,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 816,
+                        "y": 267,
+                        "width": 586,
+                        "height": 1462
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20230927_155758_jpg.rf.3cbc0fdcf3715d6319488a6a5a18cc11.jpg726162": {
+            "filename": "IMG_20230927_155758_jpg.rf.3cbc0fdcf3715d6319488a6a5a18cc11.jpg",
+            "size": 726162,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 545,
+                        "y": 328,
+                        "width": 888,
+                        "height": 1127
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20230928_102626_jpg.rf.005adab4c044bbc35fb3acdec651b681.jpg584478": {
+            "filename": "IMG_20230928_102626_jpg.rf.005adab4c044bbc35fb3acdec651b681.jpg",
+            "size": 584478,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 586,
+                        "y": 442,
+                        "width": 858,
+                        "height": 1042
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231001_155921_1_jpg.rf.9d9a544352110971913a918285c32858.jpg296882": {
+            "filename": "IMG_20231001_155921_1_jpg.rf.9d9a544352110971913a918285c32858.jpg",
+            "size": 296882,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 398,
+                        "y": 57,
+                        "width": 1575,
+                        "height": 910
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 374,
+                        "y": 836,
+                        "width": 1201,
+                        "height": 1105
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231002_143353_jpg.rf.b5ba63c8680800c90622fd802091c0d5.jpg337536": {
+            "filename": "IMG_20231002_143353_jpg.rf.b5ba63c8680800c90622fd802091c0d5.jpg",
+            "size": 337536,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 293,
+                        "y": 494,
+                        "width": 1516,
+                        "height": 1227
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231002_143617_jpg.rf.49ff4431f162207c51496d54ab885920.jpg662000": {
+            "filename": "IMG_20231002_143617_jpg.rf.49ff4431f162207c51496d54ab885920.jpg",
+            "size": 662000,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 372,
+                        "y": 416,
+                        "width": 1125,
+                        "height": 1302
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231002_143716_jpg.rf.07f198668cbd8b5504bd928a8e0e819b.jpg368348": {
+            "filename": "IMG_20231002_143716_jpg.rf.07f198668cbd8b5504bd928a8e0e819b.jpg",
+            "size": 368348,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 352,
+                        "y": 357,
+                        "width": 678,
+                        "height": 1271
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 919,
+                        "y": 510,
+                        "width": 869,
+                        "height": 807
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231002_143728_jpg.rf.3a4b928d5a929d06d278be6c0065ad43.jpg447227": {
+            "filename": "IMG_20231002_143728_jpg.rf.3a4b928d5a929d06d278be6c0065ad43.jpg",
+            "size": 447227,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 339,
+                        "y": 600,
+                        "width": 805,
+                        "height": 1308
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 1109,
+                        "y": 698,
+                        "width": 656,
+                        "height": 1273
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231003_152428_jpg.rf.901f65c158b2701992a04746b15070d7.jpg469736": {
+            "filename": "IMG_20231003_152428_jpg.rf.901f65c158b2701992a04746b15070d7.jpg",
+            "size": 469736,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 127,
+                        "y": 635,
+                        "width": 877,
+                        "height": 1127
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 965,
+                        "y": 621,
+                        "width": 831,
+                        "height": 1138
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231003_153022_jpg.rf.0189f12e644dd982aa51a3b19334f8cf.jpg377978": {
+            "filename": "IMG_20231003_153022_jpg.rf.0189f12e644dd982aa51a3b19334f8cf.jpg",
+            "size": 377978,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 466,
+                        "y": 249,
+                        "width": 1072,
+                        "height": 1556
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 346,
+                        "y": 915,
+                        "width": 674,
+                        "height": 1022
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231003_153025_jpg.rf.284e54e7da6a9dfd2c31b4f8c28f641a.jpg593207": {
+            "filename": "IMG_20231003_153025_jpg.rf.284e54e7da6a9dfd2c31b4f8c28f641a.jpg",
+            "size": 593207,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 422,
+                        "y": 772,
+                        "width": 608,
+                        "height": 1192
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 575,
+                        "y": 217,
+                        "width": 923,
+                        "height": 1672
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231003_153241_jpg.rf.2a1043470e5fd92e3478066e54cc4ffd.jpg371445": {
+            "filename": "IMG_20231003_153241_jpg.rf.2a1043470e5fd92e3478066e54cc4ffd.jpg",
+            "size": 371445,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 490,
+                        "y": 234,
+                        "width": 961,
+                        "height": 1510
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231003_153259_jpg.rf.411fffeb6604bcd0b032d0020f6d1492.jpg298682": {
+            "filename": "IMG_20231003_153259_jpg.rf.411fffeb6604bcd0b032d0020f6d1492.jpg",
+            "size": 298682,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 449,
+                        "y": 201,
+                        "width": 1192,
+                        "height": 1634
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231003_154053_jpg.rf.577dfd2283b45c9776443816faa9e4be.jpg404967": {
+            "filename": "IMG_20231003_154053_jpg.rf.577dfd2283b45c9776443816faa9e4be.jpg",
+            "size": 404967,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 350,
+                        "y": 197,
+                        "width": 726,
+                        "height": 1136
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 1046,
+                        "y": 372,
+                        "width": 781,
+                        "height": 1346
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231003_154116_jpg.rf.5e2f7af671c3c8392382dda690e92e2d.jpg559566": {
+            "filename": "IMG_20231003_154116_jpg.rf.5e2f7af671c3c8392382dda690e92e2d.jpg",
+            "size": 559566,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 361,
+                        "y": 363,
+                        "width": 1243,
+                        "height": 1361
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231004_154002_1_jpg.rf.3beb484e1fcaa0fc85237aec10dca8ab.jpg371200": {
+            "filename": "IMG_20231004_154002_1_jpg.rf.3beb484e1fcaa0fc85237aec10dca8ab.jpg",
+            "size": 371200,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 162,
+                        "y": 595,
+                        "width": 886,
+                        "height": 1179
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 915,
+                        "y": 481,
+                        "width": 888,
+                        "height": 1234
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231004_154007_jpg.rf.5a97594fba94ce305416667c42f465f4.jpg627657": {
+            "filename": "IMG_20231004_154007_jpg.rf.5a97594fba94ce305416667c42f465f4.jpg",
+            "size": 627657,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 203,
+                        "y": 254,
+                        "width": 816,
+                        "height": 1503
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 947,
+                        "y": 173,
+                        "width": 873,
+                        "height": 1438
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231004_154024_1_jpg.rf.9c05c5ce82d157df93b9127c4a532803.jpg408470": {
+            "filename": "IMG_20231004_154024_1_jpg.rf.9c05c5ce82d157df93b9127c4a532803.jpg",
+            "size": 408470,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 90,
+                        "y": 282,
+                        "width": 967,
+                        "height": 1433
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 888,
+                        "y": 429,
+                        "width": 838,
+                        "height": 1518
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231005_091035_jpg.rf.6f6851db0b0932c865b321845ef6dff9.jpg586480": {
+            "filename": "IMG_20231005_091035_jpg.rf.6f6851db0b0932c865b321845ef6dff9.jpg",
+            "size": 586480,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 486,
+                        "y": 346,
+                        "width": 1044,
+                        "height": 1564
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231009_163539_jpg.rf.0d9b5b91c0d5facc99c8c945098d44df.jpg419325": {
+            "filename": "IMG_20231009_163539_jpg.rf.0d9b5b91c0d5facc99c8c945098d44df.jpg",
+            "size": 419325,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 236,
+                        "y": 389,
+                        "width": 1370,
+                        "height": 1479
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231010_110050_jpg.rf.61e67a131a3765b33889d5a41f99b18a.jpg437897": {
+            "filename": "IMG_20231010_110050_jpg.rf.61e67a131a3765b33889d5a41f99b18a.jpg",
+            "size": 437897,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 521,
+                        "y": 168,
+                        "width": 982,
+                        "height": 1510
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231012_154806_jpg.rf.6d3b8b1810ae9ebd3b4808a30e8caef7.jpg488127": {
+            "filename": "IMG_20231012_154806_jpg.rf.6d3b8b1810ae9ebd3b4808a30e8caef7.jpg",
+            "size": 488127,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 376,
+                        "y": 326,
+                        "width": 1160,
+                        "height": 1586
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231012_154922_jpg.rf.52f8b4428ae0db2c7752a135111ea77f.jpg672791": {
+            "filename": "IMG_20231012_154922_jpg.rf.52f8b4428ae0db2c7752a135111ea77f.jpg",
+            "size": 672791,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 497,
+                        "y": 280,
+                        "width": 1081,
+                        "height": 1582
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 1055,
+                        "y": 271,
+                        "width": 324,
+                        "height": 521
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231012_154937_jpg.rf.1d412e1407604f2656e48471b27f72d5.jpg414982": {
+            "filename": "IMG_20231012_154937_jpg.rf.1d412e1407604f2656e48471b27f72d5.jpg",
+            "size": 414982,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 442,
+                        "y": 451,
+                        "width": 1278,
+                        "height": 1481
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231012_155053_jpg.rf.4bf1f0eef14efcfaaf99150c9a557116.jpg405594": {
+            "filename": "IMG_20231012_155053_jpg.rf.4bf1f0eef14efcfaaf99150c9a557116.jpg",
+            "size": 405594,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 241,
+                        "y": 534,
+                        "width": 1801,
+                        "height": 1107
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231012_155105_jpg.rf.f984ec606368ab005784bbcadd514b36.jpg780536": {
+            "filename": "IMG_20231012_155105_jpg.rf.f984ec606368ab005784bbcadd514b36.jpg",
+            "size": 780536,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 1610,
+                        "y": 109,
+                        "width": 223,
+                        "height": 357
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 442,
+                        "y": 149,
+                        "width": 317,
+                        "height": 593
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 619,
+                        "y": 372,
+                        "width": 875,
+                        "height": 1273
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231012_155150_jpg.rf.222e4e720805d36bb679675bf887b2c8.jpg447733": {
+            "filename": "IMG_20231012_155150_jpg.rf.222e4e720805d36bb679675bf887b2c8.jpg",
+            "size": 447733,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 680,
+                        "y": 2,
+                        "width": 396,
+                        "height": 512
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 435,
+                        "y": 580,
+                        "width": 1164,
+                        "height": 1155
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231023_111017_jpg.rf.66c34b5d9a59e2fcca192b731bbc947b.jpg829967": {
+            "filename": "IMG_20231023_111017_jpg.rf.66c34b5d9a59e2fcca192b731bbc947b.jpg",
+            "size": 829967,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 66,
+                        "y": 63,
+                        "width": 291,
+                        "height": 414
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 554,
+                        "y": 15,
+                        "width": 481,
+                        "height": 304
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 256,
+                        "y": 88,
+                        "width": 1418,
+                        "height": 1632
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231023_111050_jpg.rf.2ff4ae5fd36a238794325e96d00149b0.jpg658224": {
+            "filename": "IMG_20231023_111050_jpg.rf.2ff4ae5fd36a238794325e96d00149b0.jpg",
+            "size": 658224,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 179,
+                        "y": 291,
+                        "width": 1571,
+                        "height": 1433
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231023_111206_jpg.rf.3f3158ee366ba53fba8e933565dc7dda.jpg628094": {
+            "filename": "IMG_20231023_111206_jpg.rf.3f3158ee366ba53fba8e933565dc7dda.jpg",
+            "size": 628094,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 650,
+                        "y": 315,
+                        "width": 766,
+                        "height": 1632
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231025_111646_jpg.rf.0e42c86eb24f700291a17defe189d984.jpg681682": {
+            "filename": "IMG_20231025_111646_jpg.rf.0e42c86eb24f700291a17defe189d984.jpg",
+            "size": 681682,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 543,
+                        "y": 4,
+                        "width": 786,
+                        "height": 481
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                },
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 212,
+                        "y": 319,
+                        "width": 1512,
+                        "height": 1468
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231027_135659_jpg.rf.41a813ff46c19010ac54c52590cf4832.jpg508516": {
+            "filename": "IMG_20231027_135659_jpg.rf.41a813ff46c19010ac54c52590cf4832.jpg",
+            "size": 508516,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 295,
+                        "y": 519,
+                        "width": 1578,
+                        "height": 910
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231027_135746_jpg.rf.4e38799b8c2591ae54ff333452df53ae.jpg720459": {
+            "filename": "IMG_20231027_135746_jpg.rf.4e38799b8c2591ae54ff333452df53ae.jpg",
+            "size": 720459,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 214,
+                        "y": 184,
+                        "width": 1532,
+                        "height": 1451
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231027_135842_jpg.rf.4d519b74cd142ead5ab1c8b212007bb2.jpg606829": {
+            "filename": "IMG_20231027_135842_jpg.rf.4d519b74cd142ead5ab1c8b212007bb2.jpg",
+            "size": 606829,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 530,
+                        "y": 256,
+                        "width": 1160,
+                        "height": 1446
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        },
+        "IMG_20231030_111739_jpg.rf.5a97445889e484607ec74e0ff3f655b2.jpg481113": {
+            "filename": "IMG_20231030_111739_jpg.rf.5a97445889e484607ec74e0ff3f655b2.jpg",
+            "size": 481113,
+            "regions": [
+                {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": 232,
+                        "y": 344,
+                        "width": 1759,
+                        "height": 1066
+                    },
+                    "region_attributes": {
+                        "soja": ""
+                    }
+                }
+            ],
+            "file_attributes": {}
+        }
+    },
+    "_via_attributes": {
+        "region": {
+            "soja": {
+                "type": "text",
+                "description": "",
+                "default_value": ""
+            }
+        },
+        "file": {}
+    }
+}

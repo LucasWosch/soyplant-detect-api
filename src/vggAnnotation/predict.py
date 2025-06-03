@@ -16,6 +16,9 @@ def detectar_soja_na_imagem(pil_image: Image.Image):
     # Converte PIL para numpy (OpenCV usa BGR)
     original = np.array(pil_image.convert("RGB"))
     original = cv2.cvtColor(original, cv2.COLOR_RGB2BGR)
+    cv2.imshow("Imagem original:",original)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     h, w = original.shape[:2]
 
     # Redimensiona e normaliza para o modelo

@@ -14,11 +14,12 @@ from kerasTrain.predict import predict_image  # Certifique-se de que esse arquiv
 # from sklearnTrain.predict_count import prever_quantidade_soja
 from sklearnTrain.full_analysis import analisar_todos
 from sklearnTrain.predict import prever_se_soja
-from vggAnnotation.predict import detectar_soja_na_imagem
 from cnnTrain.predict import prever_com_cnn
 from cnnTrain.predict import prever_quantidade_cnn
 
 
+from vggAnnotation.predict import detectar_soja_na_imagem
+from vggAnnotation.predict_polygon import detectar_poligonos_soja
 
 
 app = FastAPI()
@@ -67,6 +68,21 @@ async def detect_soja_boxes(file: UploadFile = File(...)):
 
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
+
+@app.post("/detect-soja-polygons/")
+async def detect_soja_polygons(file: UploadFile = File(...)):
+        try:
+            image_bytes = await file.read()
+            image = Image.open(BytesIO(image_bytes)).convert("RGB")
+
+            polygons = detectar_poligonos_soja(image)
+
+            return JSONResponse(content={
+                "polygons": polygons
+            })
+
+        except Exception as e:
+            return JSONResponse(content={"error": str(e)}, status_code=400)
 
 @app.post("/predict-soja/")
 async def predict_soja(file: UploadFile = File(...)):

@@ -3,11 +3,11 @@ import cv2
 import matplotlib.pyplot as plt
 from keras import models
 from PIL import Image
+import os
+print(os.path.exists('C:/Users/Gamer/PycharmProjects/soyplant-detect-api/src/vggAnnotation/soja_detector_model.keras'))
 
 IMG_SIZE = 224
-MODEL_PATH = "C:/Users/lucas37805/Documents/Projetos/soyplant-detect-api/src/vggAnnotation/soja_detector_model.keras"
-
-model = models.load_model(MODEL_PATH, compile=False)
+model = models.load_model("C:/Users/Gamer/PycharmProjects/soyplant-detect-api/src/vggAnnotation/soja_detector_model.keras", compile=False)
 
 def detectar_soja_na_imagem(pil_image: Image.Image):
     """
@@ -16,9 +16,6 @@ def detectar_soja_na_imagem(pil_image: Image.Image):
     # Converte PIL para numpy (OpenCV usa BGR)
     original = np.array(pil_image.convert("RGB"))
     original = cv2.cvtColor(original, cv2.COLOR_RGB2BGR)
-    cv2.imshow("Imagem original:",original)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
     h, w = original.shape[:2]
 
     # Redimensiona e normaliza para o modelo

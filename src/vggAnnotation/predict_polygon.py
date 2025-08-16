@@ -5,7 +5,7 @@ from keras import models
 from PIL import Image
 
 IMG_SIZE = 224
-MODEL_PATH = "C:/Users/lucas37805/Documents/Projetos/soyplant-detect-api/src/vggAnnotation/soja_segmentation_model.keras"
+MODEL_PATH = "C:/Users/Gamer/PycharmProjects/soyplant-detect-api/src/vggAnnotation/soja_detector_model.keras"
 
 model = models.load_model(MODEL_PATH, compile=False)
 

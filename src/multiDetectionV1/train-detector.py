@@ -13,7 +13,7 @@ from collections import defaultdict
 # =====================
 IMG_SIZE = 224
 BATCH_SIZE = 8
-EPOCHS = 50
+EPOCHS = 30
 N_BOXES = 50  # número máximo de caixas por imagem
 DATA_CSV = 'annotations.csv'
 IMAGES_DIR = '../../data/v2/'
@@ -73,24 +73,24 @@ def build_model(img_size=IMG_SIZE, n_boxes=N_BOXES):
     """
     Saída: (n_boxes, 5) com sigmoid -> [conf, x, y, w, h] em [0..1]
     """
-    inputs = layers.Input(shape=(img_size, img_size, 3))
 
-    # backbone simples (pode trocar por MobileNetV2, EfficientNet, etc.)
-    x = layers.Conv2D(32, 3, padding='same', activation='relu')(inputs)
-    x = layers.MaxPooling2D()(x)
-    x = layers.Conv2D(64, 3, padding='same', activation='relu')(x)
-    x = layers.MaxPooling2D()(x)
-    x = layers.Conv2D(128, 3, padding='same', activation='relu')(x)
-    x = layers.MaxPooling2D()(x)
-    x = layers.Conv2D(256, 3, padding='same', activation='relu')(x)
-    x = layers.GlobalAveragePooling2D()(x)
 
-    x = layers.Dense(512, activation='relu')(x)
-    x = layers.Dropout(0.25)(x)
-    x = layers.Dense(n_boxes * 5, activation='sigmoid')(x)
-    outputs = layers.Reshape((n_boxes, 5))(x)
+    model = models.Sequential([
+        layers.Input(shape=(IMG_SIZE, IMG_SIZE, 3)),
+        layers.Conv2D(32, (3, 3), activation='relu'),
+        layers.MaxPooling2D(2, 2),
 
-    model = models.Model(inputs, outputs, name='soja_multibox')
+        layers.Conv2D(64, (3, 3), activation='relu'),
+        layers.MaxPooling2D(2, 2),
+
+        layers.Conv2D(128, (3, 3), activation='relu'),
+        layers.MaxPooling2D(2, 2),
+
+        layers.Flatten(),
+        layers.Dense(128, activation='relu'),
+        layers.Dense(n_boxes * 5, activation='sigmoid'),  # [class_id, x, y, w, h]
+        layers.Reshape((n_boxes, 5))
+    ])
     return model
 
 def iou_xywh(box1, box2, eps=1e-7):

@@ -4,3 +4,4 @@ delete_imgs.py
 src/cnnTrain/temp_dataset
 src/vggAnnotation/soja_detector_model.keras
 src/multiDetectionV1/soja_detector_model.keras
+*keras

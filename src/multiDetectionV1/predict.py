@@ -24,7 +24,7 @@ def _encode_bgr_to_data_url(bgr_img, quality: int = 90) -> str:
     b64 = base64.b64encode(buf).decode("utf-8")
     return f"data:image/jpeg;base64,{b64}"
 
-def detectar_soja_multibox(pil_image: Image.Image, conf_threshold=0.01, min_size=0.01):
+def detectar_soja_multibox(pil_image: Image.Image, conf_threshold=0.1, min_size=0.01):
     """
     Prediz até N_BOXES e retorna:
       - boxes: lista de caixas em pixels (após filtros)

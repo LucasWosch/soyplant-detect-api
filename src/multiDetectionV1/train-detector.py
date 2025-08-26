@@ -14,10 +14,10 @@ from collections import defaultdict
 IMG_SIZE = 224
 BATCH_SIZE = 8
 EPOCHS = 30
-N_BOXES = 50  # número máximo de caixas por imagem
+N_BOXES = 2  # número máximo de caixas por imagem
 DATA_CSV = 'annotations.csv'
 IMAGES_DIR = '../../data/v2/'
-MODEL_SAVE_PATH = 'soja_detector_multibox.keras'
+MODEL_SAVE_PATH = 'soja_detector_multibox_b2.keras'
 SEED = 42
 
 np.random.seed(SEED)

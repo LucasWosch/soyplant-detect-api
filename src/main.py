@@ -16,6 +16,7 @@ from kerasTrain.predict import predict_image
 from sklearnTrain.predict import prever_se_soja
 from vggAnnotation.predict import detectar_soja_na_imagem
 from multiDetectionV1.predict import detectar_soja_multibox
+from multiDetectionV2.predict import detectar_soja_multibox_V2
 from cnnTrain.predict import prever_com_cnn, prever_quantidade_cnn
 
 TAGS_METADATA = [
@@ -123,6 +124,7 @@ def playground():
             <option value="/analyze-all/">POST /analyze-all/</option>
             <option value="/detect-box/">POST /detect-box/</option>
             <option value="/detect-multibox/">POST /detect-multibox/</option>
+            <option value="/detect-multibox-V2/">POST /detect-multibox-V2/</option>
           </select>
 
           <label for="file">Imagem</label>
@@ -299,6 +301,22 @@ async def detect_multibox_route(file: UploadFile = File(...)):
         image = _read_image_from_upload(file)
         # agora a função já retorna boxes, raw nomeado e image_base64
         resultado = detectar_soja_multibox(image)
+        return JSONResponse(content=resultado)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+
+
+@app.post(
+    "/detect-multibox-V2/",
+    tags=["Detecção de Soja V2"],
+    summary="Detecta múltiplas caixas (multi model) e retorna imagem anotada V2",
+    responses={400: {"model": ErrorResponse}}
+)
+async def detect_multibox_route(file: UploadFile = File(...)):
+    try:
+        image = _read_image_from_upload(file)
+        # agora a função já retorna boxes, raw nomeado e image_base64
+        resultado = detectar_soja_multibox_V2(image)
         return JSONResponse(content=resultado)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)

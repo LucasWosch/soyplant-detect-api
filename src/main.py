@@ -1,6 +1,6 @@
 # main.py
 from io import BytesIO
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, HTMLResponse
@@ -19,9 +19,14 @@ from multiDetectionV1.predict import detectar_soja_multibox
 from multiDetectionV2.predict import detectar_soja_multibox_V2
 from cnnTrain.predict import prever_com_cnn, prever_quantidade_cnn
 
+# --- YOLO (CPU) ---
+from yoloDetectionV1.predict import predict_yolo  # garante que MODEL_PATH esteja correto no yolo_predict.py
+
 TAGS_METADATA = [
     {"name": "Predições Clássicas", "description": "Predição binária e contagem com diferentes modelos."},
     {"name": "Detecção de Soja", "description": "Detecção de pés de soja e caixas (bounding boxes)."},
+    {"name": "Detecção de Soja V2", "description": "Versão v2 multi-box normalizada [conf,x,y,w,h]."},
+    {"name": "YOLO (CPU)", "description": "Detecção com Ultralytics YOLOv8 rodando no CPU."},
     {"name": "Contagem / Cor", "description": "Contagem de objetos e detecção por cor (verde)."},
     {"name": "Detecção de Features", "description": "Detectores de cantos/pontos: Harris e Shi-Tomasi."},
     {"name": "Análises Completas", "description": "Rotas que executam pipelines mais amplos de análise."}
@@ -33,7 +38,7 @@ app = FastAPI(
         "Endpoints para predição binária, detecção de múltiplos objetos, "
         "contagem e análise de imagens. Envie uma imagem (campo `file`) em multipart/form-data."
     ),
-    version="1.0.1",
+    version="1.1.0",
     openapi_tags=TAGS_METADATA,
     swagger_ui_parameters={
         "defaultModelsExpandDepth": -1,
@@ -49,6 +54,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ===================== Models (Swagger) =====================
 class ErrorResponse(BaseModel):
     error: str = Field(...)
 
@@ -77,10 +83,37 @@ class FeaturesResponse(BaseModel):
 class GenericDictResponse(BaseModel):
     result: Dict[str, Any]
 
+# YOLO response models (opcional – melhora docs)
+class YOLOBoxPixel(BaseModel):
+    x1: int
+    y1: int
+    x2: int
+    y2: int
+    confidence: float
+    class_id: int
+    name: str
+
+class YOLOBoxNorm(BaseModel):
+    x: float
+    y: float
+    w: float
+    h: float
+    confidence: float
+    class_id: int
+    name: str
+
+class YOLOResponse(BaseModel):
+    boxes: List[YOLOBoxPixel]
+    boxes_norm: List[YOLOBoxNorm]
+    raw: List[Dict[str, Any]]
+    image_base64: Optional[str] = None
+
+# ===================== Utils =====================
 def _read_image_from_upload(file: UploadFile) -> Image.Image:
     image_bytes = file.file.read()
     return Image.open(BytesIO(image_bytes)).convert("RGB")
 
+# ===================== Root & Playground =====================
 @app.get("/", include_in_schema=False)
 def root():
     return {"message": "API online. Acesse /docs para o Swagger ou /playground para testar uploads."}
@@ -102,6 +135,7 @@ def playground():
         .row { display:flex; gap:24px; flex-wrap: wrap; }
         .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; }
         img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #ddd; }
+        select, input[type=file] { width: 100%; }
       </style>
     </head>
     <body>
@@ -125,6 +159,7 @@ def playground():
             <option value="/detect-box/">POST /detect-box/</option>
             <option value="/detect-multibox/">POST /detect-multibox/</option>
             <option value="/detect-multibox-V2/">POST /detect-multibox-V2/</option>
+            <option value="/detect-yolo/">POST /detect-yolo/</option>
           </select>
 
           <label for="file">Imagem</label>
@@ -170,7 +205,6 @@ def playground():
             const json = await resp.json();
             output.textContent = JSON.stringify(json, null, 2);
 
-            // se a API retornar image_base64, mostramos
             if (json.image_base64) {
               preview.src = json.image_base64;
               preview.alt = "Imagem anotada";
@@ -191,7 +225,6 @@ def playground():
     return HTMLResponse(content=html)
 
 # ---------------- Predições Clássicas ----------------
-
 @app.post(
     "/predict/",
     tags=["Predições Clássicas"],
@@ -258,8 +291,7 @@ async def predict_qty_cnn(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
-# ---------------- Detecção de Soja ----------------
-
+# ---------------- Detecção de Soja (VGG/Custom) ----------------
 @app.post(
     "/detect-soja-boxes/",
     tags=["Detecção de Soja"],
@@ -299,12 +331,10 @@ async def detect_box_alias(file: UploadFile = File(...)):
 async def detect_multibox_route(file: UploadFile = File(...)):
     try:
         image = _read_image_from_upload(file)
-        # agora a função já retorna boxes, raw nomeado e image_base64
         resultado = detectar_soja_multibox(image)
         return JSONResponse(content=resultado)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
-
 
 @app.post(
     "/detect-multibox-V2/",
@@ -312,17 +342,32 @@ async def detect_multibox_route(file: UploadFile = File(...)):
     summary="Detecta múltiplas caixas (multi model) e retorna imagem anotada V2",
     responses={400: {"model": ErrorResponse}}
 )
-async def detect_multibox_route(file: UploadFile = File(...)):
+async def detect_multibox_route_v2(file: UploadFile = File(...)):
     try:
         image = _read_image_from_upload(file)
-        # agora a função já retorna boxes, raw nomeado e image_base64
         resultado = detectar_soja_multibox_V2(image)
         return JSONResponse(content=resultado)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
-# ---------------- Contagem / Cor ----------------
+# ---------------- YOLO (CPU) ----------------
+@app.post(
+    "/detect-yolo/",
+    tags=["YOLO (CPU)"],
+    summary="Detecta múltiplas caixas com YOLOv8 (CPU) e retorna imagem anotada",
+    response_model=YOLOResponse,
+    responses={400: {"model": ErrorResponse}}
+)
+async def detect_yolo_route(file: UploadFile = File(...)):
+    try:
+        image = _read_image_from_upload(file)
+        out = predict_yolo(image, conf_threshold=0.25, imgsz=640)
+        # out possui: boxes, boxes_norm, raw, image_base64
+        return JSONResponse(content=out)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
 
+# ---------------- Contagem / Cor ----------------
 @app.post(
     "/count-objects/",
     tags=["Contagem / Cor"],
@@ -354,7 +399,6 @@ async def count_green(file: UploadFile = File(...)):
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
 # ---------------- Detecção de Features ----------------
-
 @app.post(
     "/detect-shi-tomasi/",
     tags=["Detecção de Features"],
@@ -401,5 +445,8 @@ async def detect_features(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
+# ===================== Run =====================
 if __name__ == "__main__":
+    # Em dev, se a sua GPU estiver causando OOM por conta do reload,
+    # rode com CPU forçada em outros processos pesados. Para YOLO já é CPU.
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

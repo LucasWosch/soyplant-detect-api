@@ -1,17 +1,26 @@
+# train_yolo.py
 from ultralytics import YOLO
 
-model = YOLO('yolov8n.pt')  # backbone leve
-results = model.train(
-    data='data.yaml',
-    epochs=10,
-    imgsz=640,
-    batch=8,
-    device='cpu',
-    workers=0,
-    optimizer='adamw',   # opcional
-    cos_lr=True,         # opcional
-    patience=20          # early stop opcional
-)
+def main():
+    # Carrega o modelo pré-treinado (YOLOv8n)
+    model = YOLO("yolov8n.pt")
 
-# melhor checkpoint
-model = YOLO('runs/detect/train/weights/best.pt')
+    # Treino (equivalente ao comando CLI)
+    model.train(
+        data="data.yaml",   # caminho do seu data.yaml
+        epochs=10,          # épocas
+        imgsz=640,          # tamanho da imagem
+        batch=16,           # batch size
+        device=0,           # GPU 0; use "cpu" se não tiver GPU
+        workers=0           # 0 no Windows; pode usar >0 no Linux
+    )
+
+    # (Opcional) Avaliar no conjunto de validação
+    model.val(data="data.yaml", imgsz=640, batch=16, device=0, workers=0)
+
+    # (Opcional) Fazer uma inferência rápida após o treino
+    # Troque "caminho/para/imagem.jpg" por um arquivo da sua base
+    # results = model.predict(source="caminho/para/imagem.jpg", imgsz=640, device=0)
+
+if __name__ == "__main__":
+    main()

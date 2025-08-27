@@ -1,0 +1,7 @@
+# data.yaml
+path: ../../data/v5
+train: train/images
+val: valid/images
+
+names:
+  0: soja

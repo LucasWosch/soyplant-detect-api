@@ -8,7 +8,7 @@ def main():
     # Treino (equivalente ao comando CLI)
     model.train(
         data="data.yaml",   # caminho do seu data.yaml
-        epochs=10,          # épocas
+        epochs=50,          # épocas
         imgsz=640,          # tamanho da imagem
         batch=16,           # batch size
         device=0,           # GPU 0; use "cpu" se não tiver GPU

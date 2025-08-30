@@ -13,7 +13,7 @@ def main(
 
     model.train(
         data=data,
-        epochs=10,
+        epochs=50,
         imgsz=640,
         batch=16,
         device=device,

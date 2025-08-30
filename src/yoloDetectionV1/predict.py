@@ -7,7 +7,7 @@ from ultralytics import YOLO
 from PIL import Image
 
 # ======= CONFIG =======
-MODEL_PATH = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train3/weights/best.pt"  # ajuste se necessário
+MODEL_PATH = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train8/weights/best.pt"  # ajuste se necessário
 
 # Seleção automática de device
 _HAS_CUDA = torch.cuda.is_available()

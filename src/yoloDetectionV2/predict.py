@@ -10,7 +10,7 @@ from PIL import Image
 from typing import Tuple
 
 # ======= CONFIG =======
-MODEL_PATH = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train4/weights/best.pt"  # ajuste se necessário
+MODEL_PATH = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train5/weights/best.pt"  # ajuste se necessário
 
 # Seleção automática de device
 _HAS_CUDA = torch.cuda.is_available()

@@ -2,7 +2,7 @@ import os
 
 import joblib
 import numpy as np
-from full_analysis import analisar_todos
+from src.sklearnTrain.full_analysis import analisar_todos
 from PIL import ImageDraw
 
 # Carregar o modelo de classificação salvo

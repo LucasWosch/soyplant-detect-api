@@ -1,7 +1,7 @@
 import os
 import joblib
 import numpy as np
-from full_analysis import analisar_todos
+from src.sklearnTrain.full_analysis import analisar_todos
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 modelo_path = os.path.join(current_dir, "modelo_soja_regressao.pkl")

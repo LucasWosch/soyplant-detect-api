@@ -140,6 +140,10 @@ def playground():
         .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; }
         img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #ddd; }
         select, input[type=file] { width: 100%; }
+        #gallery { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:8px; }
+        figure { margin:0; }
+        figcaption { font-size:12px; margin-top:6px; word-break: break-all; color:#666; }
+        .muted { color:#777; font-size: 12px; }
       </style>
     </head>
     <body>
@@ -179,23 +183,82 @@ def playground():
         </div>
 
         <div class="card" style="flex:1; min-width:320px;">
-          <h3>Preview da Imagem</h3>
+          <h3>Preview da Imagem (image_base64)</h3>
           <img id="preview" alt="Sem imagem ainda" />
+          <h4 style="margin-top:16px;">Todas as imagens retornadas</h4>
+          <div id="gallery"><p class="muted">Sem imagens ainda.</p></div>
         </div>
       </div>
 
       <script>
+        function isDataUrlImage(value) {
+          return typeof value === 'string' && value.startsWith('data:image/');
+        }
+
+        // percorre recursivamente o JSON e coleta todas as chaves com dataURL
+        function collectImages(obj, pathPrefix = '') {
+          const items = [];
+          if (obj && typeof obj === 'object') {
+            for (const [k, v] of Object.entries(obj)) {
+              const path = pathPrefix ? pathPrefix + '.' + k : k;
+              if (isDataUrlImage(v)) {
+                items.push({ key: path, dataUrl: v });
+              } else if (v && typeof v === 'object') {
+                items.push(...collectImages(v, path));
+              }
+            }
+          }
+          return items;
+        }
+
+        // ordena naturalmente se a chave começa com número (ex: "1_original")
+        function naturalSortImages(items) {
+          const numFromKey = (k) => {
+            const last = k.split('.').pop() || '';
+            const m = /^\\s*(\\d+)/.exec(last);
+            return m ? parseInt(m[1], 10) : Number.POSITIVE_INFINITY;
+          };
+          return items.sort((a, b) => {
+            const na = numFromKey(a.key), nb = numFromKey(b.key);
+            if (na !== nb) return na - nb;
+            return a.key.localeCompare(b.key);
+          });
+        }
+
+        function renderGallery(images) {
+          const gallery = document.getElementById('gallery');
+          gallery.innerHTML = '';
+          if (!images.length) {
+            gallery.innerHTML = '<p class="muted">Este endpoint não retornou imagens.</p>';
+            return;
+          }
+          for (const item of images) {
+            const fig = document.createElement('figure');
+            const img = document.createElement('img');
+            const cap = document.createElement('figcaption');
+            img.src = item.dataUrl;
+            img.alt = item.key;
+            cap.textContent = item.key;
+            fig.appendChild(img);
+            fig.appendChild(cap);
+            gallery.appendChild(fig);
+          }
+        }
+
         async function send() {
           const endpoint = document.getElementById('endpoint').value;
           const fileInput = document.getElementById('file');
           const output = document.getElementById('output');
           const preview = document.getElementById('preview');
+          const gallery = document.getElementById('gallery');
           output.textContent = "Enviando...";
           preview.removeAttribute('src');
           preview.alt = "Sem imagem ainda";
+          gallery.innerHTML = '<p class="muted">Carregando...</p>';
 
           if (!fileInput.files.length) {
             output.textContent = "Selecione uma imagem primeiro.";
+            gallery.innerHTML = '<p class="muted">Sem imagens.</p>';
             return;
           }
 
@@ -203,24 +266,28 @@ def playground():
           formData.append('file', fileInput.files[0]);
 
           try {
-            const resp = await fetch(endpoint, {
-              method: 'POST',
-              body: formData
-            });
+            const resp = await fetch(endpoint, { method: 'POST', body: formData });
             const json = await resp.json();
             output.textContent = JSON.stringify(json, null, 2);
 
+            // preview padrão (se existir image_base64)
             if (json.image_base64) {
               preview.src = json.image_base64;
               preview.alt = "Imagem anotada";
             } else {
               preview.removeAttribute('src');
-              preview.alt = "Este endpoint não retornou imagem.";
+              preview.alt = "Sem image_base64.";
             }
+
+            // coleta TODAS as imagens no JSON
+            let images = collectImages(json);
+            images = naturalSortImages(images);
+            renderGallery(images);
           } catch (e) {
             output.textContent = "Erro: " + e;
             preview.removeAttribute('src');
             preview.alt = "Erro ao carregar imagem.";
+            gallery.innerHTML = '<p class="muted">Erro ao carregar imagens.</p>';
           }
         }
       </script>
@@ -392,46 +459,57 @@ async def detect_yolo_route(file: UploadFile = File(...)):
 @app.post(
     "/count-objects/",
     tags=["Contagem / Cor"],
-    summary="Conta objetos (pipeline clássico)",
-    response_model=CountObjectsResponse,
+    summary="Conta objetos (pipeline clássico com steps)",
     responses={400: {"model": ErrorResponse}}
 )
 async def count_objects(file: UploadFile = File(...)):
     try:
         image = _read_image_from_upload(file)
-        total_objetos = contar_objetos_pil(image)
-        return {"total_objetos_detectados": total_objetos}
+        resultado = contar_objetos_pil(image)
+        return JSONResponse(content=resultado)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
 @app.post(
     "/count-green-objects/",
     tags=["Contagem / Cor"],
-    summary="Conta objetos verdes",
-    response_model=CountGreenResponse,
+    summary="Conta objetos verdes (com steps)",
     responses={400: {"model": ErrorResponse}}
 )
 async def count_green(file: UploadFile = File(...)):
     try:
         image = _read_image_from_upload(file)
-        total = detectar_objetos_verdes(image)
-        return {"total_verde_detectado": total}
+        resultado = detectar_objetos_verdes(image)
+        return JSONResponse(content=resultado)  # agora retorna todas as imagens + total + boxes
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
-# ---------------- Detecção de Features ----------------
+
+@app.post(
+    "/analyze-all/",
+    tags=["Análises Completas"],
+    summary="Análise combinada (verde + Harris + Shi-Tomasi) com steps e imagem anotada",
+    responses={400: {"model": ErrorResponse}}
+)
+async def analyze_all(file: UploadFile = File(...)):
+    try:
+        image = _read_image_from_upload(file)
+        resultado = analisar_todos(image)  # retorna data URLs: 1_..., 2_..., ..., image_base64 + métricas
+        return JSONResponse(content=resultado)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+
 @app.post(
     "/detect-shi-tomasi/",
     tags=["Detecção de Features"],
     summary="Detecta pontos (Shi-Tomasi)",
-    response_model=PointsResponse,
     responses={400: {"model": ErrorResponse}}
 )
 async def detect_shi_tomasi_route(file: UploadFile = File(...)):
     try:
         image = _read_image_from_upload(file)
-        total = detectar_shi_tomasi(image)
-        return {"pontos_detectados": total}
+        resultado = detectar_shi_tomasi(image)
+        return JSONResponse(content=resultado)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
@@ -439,14 +517,13 @@ async def detect_shi_tomasi_route(file: UploadFile = File(...)):
     "/detect-harris/",
     tags=["Detecção de Features"],
     summary="Detecta pontos (Harris)",
-    response_model=PointsResponse,
     responses={400: {"model": ErrorResponse}}
 )
 async def detect_harris_route(file: UploadFile = File(...)):
     try:
         image = _read_image_from_upload(file)
-        total = detectar_harris(image)
-        return {"pontos_detectados": total}
+        resultado = detectar_harris(image)
+        return JSONResponse(content=resultado)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
@@ -454,15 +531,21 @@ async def detect_harris_route(file: UploadFile = File(...)):
     "/detect-features/",
     tags=["Detecção de Features"],
     summary="Detecta pontos (Harris + Shi-Tomasi)",
-    response_model=FeaturesResponse,
     responses={400: {"model": ErrorResponse}}
 )
 async def detect_features(file: UploadFile = File(...)):
     try:
         image = _read_image_from_upload(file)
-        total_harris = detectar_harris(image)
-        total_tomasi = detectar_shi_tomasi(image)
-        return {"pontos_detectados_harris": total_harris, "pontos_detectados_tomasi": total_tomasi}
+
+        resultado_harris = detectar_harris(image)
+        resultado_tomasi = detectar_shi_tomasi(image)
+
+        return {
+            "pontos_detectados_harris": resultado_harris["pontos_detectados"],
+            "pontos_detectados_tomasi": resultado_tomasi["pontos_detectados"],
+            "image_base64_harris": resultado_harris["image_base64"],
+            "image_base64_tomasi": resultado_tomasi["image_base64"]
+        }
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 

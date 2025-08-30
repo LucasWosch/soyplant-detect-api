@@ -1,16 +1,16 @@
 import cv2
 import numpy as np
+import base64
 from PIL import Image
 
-def mostrar_reduzido(nome_janela, imagem, largura_fixa=500):
-    altura, largura = imagem.shape[:2]
-    proporcao = largura_fixa / float(largura)
-    nova_altura = int(altura * proporcao)
-    nova_img = cv2.resize(imagem, (largura_fixa, nova_altura))
-    cv2.imshow(nome_janela, nova_img)
+def _encode_bgr_to_data_url(bgr_img, quality: int = 90) -> str:
+    ok, buf = cv2.imencode(".jpg", bgr_img, [int(cv2.IMWRITE_JPEG_QUALITY), quality])
+    if not ok:
+        raise RuntimeError("Falha ao codificar imagem anotada.")
+    b64 = base64.b64encode(buf).decode("utf-8")
+    return f"data:image/jpeg;base64,{b64}"
 
-def detectar_harris(pil_image: Image.Image, salvar_path: str = None) -> int:
-    # Converter para BGR e float32
+def detectar_harris(pil_image: Image.Image, salvar_path: str = None) -> dict:
     img_bgr = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
     gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
     gray_f32 = np.float32(gray)
@@ -23,20 +23,17 @@ def detectar_harris(pil_image: Image.Image, salvar_path: str = None) -> int:
     img_result = img_bgr.copy()
     img_result[dst > 0.01 * dst.max()] = [0, 0, 255]
 
-    # Contar pontos (quantidade de pixels com resposta > threshold)
-    num_pontos = np.sum(dst > 0.01 * dst.max())
-
-    # Mostrar
-    mostrar_reduzido("Harris Result", img_result)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    num_pontos = int(np.sum(dst > 0.01 * dst.max()))
 
     if salvar_path:
         cv2.imwrite(salvar_path, img_result)
 
-    return int(num_pontos)
+    return {
+        "pontos_detectados": num_pontos,
+        "image_base64": _encode_bgr_to_data_url(img_result)
+    }
 
-def detectar_shi_tomasi(pil_image: Image.Image, salvar_path: str = None) -> int:
+def detectar_shi_tomasi(pil_image: Image.Image, salvar_path: str = None) -> dict:
     img_bgr = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
     gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
 
@@ -48,12 +45,10 @@ def detectar_shi_tomasi(pil_image: Image.Image, salvar_path: str = None) -> int:
         x, y = corner.ravel()
         cv2.circle(img_result, (x, y), 4, (0, 255, 0), -1)
 
-    mostrar_reduzido("Shi-Tomasi Result", img_result)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
     if salvar_path:
         cv2.imwrite(salvar_path, img_result)
 
-    return len(corners)
-
+    return {
+        "pontos_detectados": len(corners),
+        "image_base64": _encode_bgr_to_data_url(img_result)
+    }

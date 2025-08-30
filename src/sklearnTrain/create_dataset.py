@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from PIL import Image
-from full_analysis import analisar_todos  # ajuste conforme sua estrutura de pastas
+from src.sklearnTrain.full_analysis import analisar_todos  # ajuste conforme sua estrutura de pastas
 
 # Caminho das imagens e da planilha
 current_dir = os.path.dirname(os.path.abspath(__file__))

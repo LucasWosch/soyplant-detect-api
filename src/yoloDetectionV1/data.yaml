@@ -1,5 +1,5 @@
 # data.yaml
-path: ../../data/v5
+path: ../../data/v7
 train: train/images
 val: valid/images
 

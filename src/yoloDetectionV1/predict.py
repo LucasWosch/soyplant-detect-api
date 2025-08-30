@@ -7,7 +7,7 @@ from ultralytics import YOLO
 from PIL import Image
 
 # ======= CONFIG =======
-MODEL_PATH = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train11/weights/best.pt"  # ajuste se necessário
+MODEL_PATH = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train3/weights/best.pt"  # ajuste se necessário
 
 # Seleção automática de device
 _HAS_CUDA = torch.cuda.is_available()
@@ -146,11 +146,18 @@ def predict_yolo(
     boxes_norm.sort(key=lambda b: b["confidence"], reverse=True)
     raw.sort(key=lambda b: b["confidence"], reverse=True)
 
+    model_str = str(_model.model)
+    model_lines = model_str.splitlines()
+
     return {
         "device_used": device,
         "half": use_half,
         "boxes": boxes_pixels,
         "boxes_norm": boxes_norm,
         "raw": raw,
-        "image_base64": _encode_bgr_to_data_url(annotated, quality=90)
+        "image_base64": _encode_bgr_to_data_url(annotated, quality=90),
+        "arquitetura": _model.info(),  # string
+        "model": model_str,  # string (com \n)
+        "model_lines": model_lines  # <<< lista de linhas (mais legível no JSON)
     }
+

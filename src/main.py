@@ -21,6 +21,7 @@ from cnnTrain.predict import prever_com_cnn, prever_quantidade_cnn
 
 # --- YOLO (CPU) ---
 from yoloDetectionV1.predict import predict_yolo  # garante que MODEL_PATH esteja correto no yolo_predict.py
+from yoloDetectionV2.predict import predict_yolo_V2  # garante que MODEL_PATH esteja correto no yolo_predict.py
 
 TAGS_METADATA = [
     {"name": "Predições Clássicas", "description": "Predição binária e contagem com diferentes modelos."},
@@ -107,6 +108,9 @@ class YOLOResponse(BaseModel):
     boxes_norm: List[YOLOBoxNorm]
     raw: List[Dict[str, Any]]
     image_base64: Optional[str] = None
+    arquitetura: Optional[str] = None   # resumo textual do model.info()
+    model: Optional[str] = None         # string com \n
+    model_lines: Optional[List[str]] = None  # <<< mesma info, linha a linha
 
 # ===================== Utils =====================
 def _read_image_from_upload(file: UploadFile) -> Image.Image:
@@ -160,6 +164,7 @@ def playground():
             <option value="/detect-multibox/">POST /detect-multibox/</option>
             <option value="/detect-multibox-V2/">POST /detect-multibox-V2/</option>
             <option value="/detect-yolo/">POST /detect-yolo/</option>
+            <option value="/detect-yolo-v2/">POST /detect-yolo-v2/</option>
           </select>
 
           <label for="file">Imagem</label>
@@ -367,6 +372,22 @@ async def detect_yolo_route(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
+# ---------------- YOLO V2 (CPU) GREEN MASK ----------------
+@app.post(
+    "/detect-yolo-v2/",
+    tags=["YOLO (CPU)"],
+    summary="Detecta múltiplas caixas com YOLOv8 (CPU) e retorna imagem anotada filtrando verde",
+    response_model=YOLOResponse,
+    responses={400: {"model": ErrorResponse}}
+)
+async def detect_yolo_route(file: UploadFile = File(...)):
+    try:
+        image = _read_image_from_upload(file)
+        out = predict_yolo_V2(image, conf_threshold=0.25, imgsz=640)
+        # out possui: boxes, boxes_norm, raw, image_base64
+        return JSONResponse(content=out)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
 # ---------------- Contagem / Cor ----------------
 @app.post(
     "/count-objects/",

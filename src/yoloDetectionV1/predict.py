@@ -7,7 +7,7 @@ from ultralytics import YOLO
 from PIL import Image
 
 # ======= CONFIG =======
-MODEL_PATH = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train6/weights/best.pt"  # ajuste se necessário
+MODEL_PATH = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train11/weights/best.pt"  # ajuste se necessário
 
 # Seleção automática de device
 _HAS_CUDA = torch.cuda.is_available()
@@ -37,7 +37,7 @@ def _safe_name(cid: int):
 # ======= PREDICT =======
 def predict_yolo(
     pil_image: Image.Image,
-    conf_threshold: float = 0.25,
+    conf_threshold: float = 0.1,
     imgsz: int = 640,
     device_override=None,   # use 0, 1, "cpu", etc. Se None, usa auto
     half: bool = None       # Se None, usa HALF_AUTO. Passe True/False para forçar

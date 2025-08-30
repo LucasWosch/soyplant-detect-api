@@ -1,26 +1,32 @@
-# train_yolo.py
 from ultralytics import YOLO
+from datetime import datetime
 
-def main():
-    # Carrega o modelo pré-treinado (YOLOv8n)
-    model = YOLO("yolov8n.pt")
+def main(
+    model_name: str = "yolov8n.pt",   # troque para "yolo12n.pt" se quiser YOLO12
+    data: str = "data.yaml",
+    device=0,                         # 0 = GPU; use "cpu" se quiser CPU
+):
+    start_time = datetime.now()
+    print(f"🚀 Treinamento iniciado em: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # Treino (equivalente ao comando CLI)
+    model = YOLO(model_name)
+
     model.train(
-        data="data.yaml",   # caminho do seu data.yaml
-        epochs=50,          # épocas
-        imgsz=640,          # tamanho da imagem
-        batch=16,           # batch size
-        device=0,           # GPU 0; use "cpu" se não tiver GPU
-        workers=0           # 0 no Windows; pode usar >0 no Linux
+        data=data,
+        epochs=500,
+        imgsz=640,
+        batch=16,
+        device=device,
+        workers=0  # Windows: 0 é mais seguro
     )
 
-    # (Opcional) Avaliar no conjunto de validação
-    model.val(data="data.yaml", imgsz=640, batch=16, device=0, workers=0)
+    model.val(data=data, imgsz=640, batch=16, device=device, workers=0)
 
-    # (Opcional) Fazer uma inferência rápida após o treino
-    # Troque "caminho/para/imagem.jpg" por um arquivo da sua base
-    # results = model.predict(source="caminho/para/imagem.jpg", imgsz=640, device=0)
+    end_time = datetime.now()
+    print(f"🚀 Treinamento iniciado em: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"✅ Treinamento finalizado em: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"⏱️ Duração total: {end_time - start_time}")
 
 if __name__ == "__main__":
     main()
+1

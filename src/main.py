@@ -553,4 +553,4 @@ async def detect_features(file: UploadFile = File(...)):
 if __name__ == "__main__":
     # Em dev, se a sua GPU estiver causando OOM por conta do reload,
     # rode com CPU forçada em outros processos pesados. Para YOLO já é CPU.
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)

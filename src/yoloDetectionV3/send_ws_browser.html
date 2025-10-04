@@ -1,0 +1,40 @@
+<!-- send_ws_browser.html -->
+<!doctype html>
+<html>
+  <body>
+    <video id="v" autoplay muted playsinline width="640" height="360"></video>
+    <script>
+      const WS_URL = "ws://localhost:8000/ingest/ws";
+      const TARGET_FPS = 10;
+
+      const video = document.getElementById("v");
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      async function start() {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        video.srcObject = stream;
+
+        const ws = new WebSocket(WS_URL);
+        ws.binaryType = "arraybuffer";
+
+        ws.onopen = () => {
+          const sendFrame = () => {
+            const w = video.videoWidth || 640;
+            const h = video.videoHeight || 360;
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(video, 0, 0, w, h);
+            canvas.toBlob(blob => {
+              if (blob && ws.readyState === WebSocket.OPEN) {
+                blob.arrayBuffer().then(buf => ws.send(buf));
+              }
+            }, "image/jpeg", 0.8);
+          };
+          setInterval(sendFrame, 1000 / TARGET_FPS);
+        };
+      }
+      start();
+    </script>
+  </body>
+</html>

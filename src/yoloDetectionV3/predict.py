@@ -11,7 +11,7 @@ import helpers as hp
 # CONFIGURAÇÕES
 # =========================
 MODEL_PATH: str = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/runs/detect/train8/weights/best.pt"
-VIDEO_PATH: str = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/videos/teste11.mp4"
+VIDEO_PATH: str = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/videos/teste9.mp4"
 
 OUTPUT_PATH_MP4: str = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/videos/saida_detectada.mp4"
 OUTPUT_PATH_AVI: str = r"C:/Users/Gamer/PycharmProjects/soyplant-detect-api/data/videos/saida_detectada.avi"

@@ -1,40 +1,212 @@
-<!-- send_ws_browser.html -->
 <!doctype html>
-<html>
-  <body>
-    <video id="v" autoplay muted playsinline width="640" height="360"></video>
-    <script>
-      const WS_URL = "ws://localhost:8000/ingest/ws";
-      const TARGET_FPS = 10;
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Client WS — Output do Servidor</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 16px; }
+    .row { display: flex; gap: 24px; align-items: flex-start; }
+    .stack {
+      position: relative; width: 640px; height: 360px;
+      border:1px solid #ccc; border-radius:8px; overflow:hidden; background:#000;
+      display:flex; align-items:center; justify-content:center;
+    }
+    video, img { width:100%; height:100%; object-fit:cover; }
+    h3 { margin: 8px 0; font-size: 16px; }
+    .panel { min-width: 260px; display:grid; gap:8px; }
+    .kv { display:grid; grid-template-columns: 140px 1fr; gap:6px; font-size:14px; }
+    .ok { color:#0a7a0a; } .bad { color:#b30000; }
+    input[type="text"] { width: 100%; }
+    button { padding:8px 12px; border-radius:8px; border:1px solid #ddd; background:#f8f8f8; cursor:pointer; }
+    button:disabled { opacity:.6; cursor:default; }
+  </style>
+</head>
+<body>
+  <h2>Webcam → /ws (ts + jpeg) → frame_b64 (render do servidor) + Totais de IDs</h2>
 
-      const video = document.getElementById("v");
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+  <div class="row">
+    <div>
+      <h3>Input (Webcam)</h3>
+      <div class="stack">
+        <video id="v" autoplay playsinline muted width="640" height="360"></video>
+      </div>
+    </div>
 
-      async function start() {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        video.srcObject = stream;
+    <div>
+      <h3>Output (Servidor)</h3>
+      <div class="stack">
+        <img id="serverOut" alt="output do servidor" />
+      </div>
+    </div>
 
-        const ws = new WebSocket(WS_URL);
-        ws.binaryType = "arraybuffer";
+    <div class="panel">
+      <div class="kv"><div>Status:</div><div id="status" class="bad">desconectado</div></div>
+      <div class="kv"><div>Frame #:</div><div id="fidx">—</div></div>
+      <div class="kv"><div>FPS (srv):</div><div id="fps">—</div></div>
 
-        ws.onopen = () => {
-          const sendFrame = () => {
-            const w = video.videoWidth || 640;
-            const h = video.videoHeight || 360;
-            canvas.width = w;
-            canvas.height = h;
-            ctx.drawImage(video, 0, 0, w, h);
-            canvas.toBlob(blob => {
-              if (blob && ws.readyState === WebSocket.OPEN) {
-                blob.arrayBuffer().then(buf => ws.send(buf));
-              }
-            }, "image/jpeg", 0.8);
-          };
-          setInterval(sendFrame, 1000 / TARGET_FPS);
-        };
+      <div class="kv"><div>Caixas SORT (frame):</div><div id="nSort">0</div></div>
+      <div class="kv"><div>Caixas YOLO (frame):</div><div id="nYolo">0</div></div>
+
+      <div class="kv"><div><strong>TOTAL SORT (IDs)</strong>:</div><div id="totalSort">0</div></div>
+      <div class="kv"><div><strong>TOTAL YOLO (IDs)</strong>:</div><div id="totalYolo">0</div></div>
+
+      <div class="kv"><div>WS URL:</div><input id="wsurl" type="text" value="ws://localhost:8000/ws" /></div>
+
+      <div style="display:flex; gap:8px;">
+        <button id="start">Iniciar</button>
+        <button id="stop" disabled>Parar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const v = document.getElementById("v");
+    const serverOut = document.getElementById("serverOut");
+    const sendCanvas = document.createElement("canvas");
+    const sctx = sendCanvas.getContext("2d", { willReadFrequently: true });
+
+    const s = document.getElementById("status");
+    const fidxEl = document.getElementById("fidx");
+    const fpsEl = document.getElementById("fps");
+    const nSortEl = document.getElementById("nSort");
+    const nYoloEl = document.getElementById("nYolo");
+    const totalSortEl = document.getElementById("totalSort");
+    const totalYoloEl = document.getElementById("totalYolo");
+
+    const wsurl = document.getElementById("wsurl");
+    const btnStart = document.getElementById("start");
+    const btnStop  = document.getElementById("stop");
+
+    let ws = null;
+
+    function setStatus(txt, ok=false) {
+      s.textContent = `Status: ${txt}`;
+      s.className = ok ? "ok" : "bad";
+    }
+    function ensureSendSize(w, h) {
+      if (sendCanvas.width !== w || sendCanvas.height !== h) {
+        sendCanvas.width = w; sendCanvas.height = h;
       }
-      start();
-    </script>
-  </body>
+    }
+    function prependTS(tsSeconds, jpegBuffer) {
+      const header = new ArrayBuffer(8);
+      new DataView(header).setFloat64(0, tsSeconds, true); // LE
+      const out = new Uint8Array(8 + jpegBuffer.byteLength);
+      out.set(new Uint8Array(header), 0);
+      out.set(new Uint8Array(jpegBuffer), 8);
+      return out.buffer;
+    }
+
+    async function start() {
+      btnStart.disabled = true; btnStop.disabled = false;
+
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      v.srcObject = stream;
+
+      const url = wsurl.value.trim();
+      ws = new WebSocket(url);
+      ws.binaryType = "arraybuffer";
+
+      ws.onopen = async () => {
+        setStatus("conectado", true);
+
+        const [track] = stream.getVideoTracks();
+        const useProcessor = 'MediaStreamTrackProcessor' in window;
+        const quality = 0.7;
+
+        async function sendWithProcessor() {
+          const proc = new MediaStreamTrackProcessor({ track });
+          const reader = proc.readable.getReader();
+          const pump = async () => {
+            const { value: vf, done } = await reader.read();
+            if (done || ws.readyState !== WebSocket.OPEN) return;
+            const w = vf.codedWidth || v.videoWidth || 640;
+            const h = vf.codedHeight || v.videoHeight || 360;
+            ensureSendSize(w, h);
+            try { sctx.drawImage(vf, 0, 0, w, h); } finally { vf.close(); }
+            sendCanvas.toBlob(async (blob) => {
+              if (!blob || ws.readyState !== WebSocket.OPEN) return pump();
+              const ab = await blob.arrayBuffer();
+              const ts = performance.now() / 1000;
+              ws.send(prependTS(ts, ab));
+              pump();
+            }, "image/jpeg", quality);
+          };
+          pump();
+        }
+        function sendWithVideo() {
+          const loop = () => {
+            if (ws.readyState !== WebSocket.OPEN) return;
+            v.requestVideoFrameCallback(() => {
+              const w = v.videoWidth || 640, h = v.videoHeight || 360;
+              ensureSendSize(w, h);
+              sctx.drawImage(v, 0, 0, w, h);
+              sendCanvas.toBlob(async (blob) => {
+                if (!blob || ws.readyState !== WebSocket.OPEN) return loop();
+                const ab = await blob.arrayBuffer();
+                const ts = performance.now() / 1000;
+                ws.send(prependTS(ts, ab));
+                loop();
+              }, "image/jpeg", quality);
+            });
+          };
+          loop();
+        }
+        if (useProcessor) {
+          try { await sendWithProcessor(); }
+          catch { sendWithVideo(); }
+        } else {
+          sendWithVideo();
+        }
+      };
+
+      ws.onmessage = (ev) => {
+        try {
+          const evt = JSON.parse(ev.data);
+          if (evt.type !== "soyplant-tracks") return;
+
+          // meta e contagens do frame
+          fidxEl.textContent = String(evt.frame_index ?? "—");
+          fpsEl.textContent  = (typeof evt.fps === "number") ? evt.fps.toFixed(1) : "—";
+          nSortEl.textContent = String(Array.isArray(evt.tracks_sort) ? evt.tracks_sort.length : 0);
+          nYoloEl.textContent = String(Array.isArray(evt.tracks_yolo) ? evt.tracks_yolo.length : 0);
+
+          // totais acumulados na sessão (IDs únicos)
+          if (evt.totals) {
+            totalSortEl.textContent = String(evt.totals.sort_unique_ids ?? 0);
+            totalYoloEl.textContent = String(evt.totals.yolo_unique_ids ?? 0);
+          }
+
+          // frame renderizado pelo servidor
+          if (evt.frame_b64) {
+            serverOut.src = "data:image/jpeg;base64," + evt.frame_b64;
+          }
+        } catch {
+          // ignore mensagens não-JSON
+        }
+      };
+
+      ws.onclose = () => {
+        setStatus("desconectado");
+        btnStart.disabled = false; btnStop.disabled = true;
+        // O último JSON recebido já contém os TOTAIS FINAIS.
+      };
+      ws.onerror  = () => {
+        setStatus("erro");
+        btnStart.disabled = false; btnStop.disabled = true;
+      };
+    }
+
+    function stop() {
+      btnStart.disabled = false; btnStop.disabled = true;
+      try { if (ws) ws.close(); } catch {}
+      ws = null;
+      v.srcObject?.getTracks()?.forEach(t => t.stop());
+      v.srcObject = null;
+    }
+
+    btnStart.addEventListener("click", start);
+    btnStop .addEventListener("click", stop);
+  </script>
+</body>
 </html>

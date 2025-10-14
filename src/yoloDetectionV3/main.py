@@ -24,7 +24,7 @@ from sort import Sort               # seu tracker SORT
 import helpers as hp                # helpers.py (IO, yolo_detect, draw_tracks)
 
 # ============ YOLO tracker nativo (opcional) ============
-YOLO_ENABLE: bool = True              # defina False se não tiver botsort/bytetrack YAML
+YOLO_ENABLE: bool = False              # defina False se não tiver botsort/bytetrack YAML
 YOLO_TRACKER: str = "bytetrack.yaml"  # ou "botsort.yaml" (precisa existir)
 
 # =========================

@@ -4,7 +4,7 @@ from pathlib import Path
 # Configurações de caminhos
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 print(PROJECT_ROOT)
-MODEL_PATH = str(PROJECT_ROOT / 'runs' / 'detect' / 'train8' / 'weights' / 'best.pt')
+MODEL_PATH = str(PROJECT_ROOT / 'runs' / 'detect' / 'train11' / 'weights' / 'best.pt')
 OUTPUT_DIR = str(PROJECT_ROOT / "videos_processados")
 
 # Configurações YOLO

@@ -1,58 +1,45 @@
-# Ficheiro: src/yoloDetectionV3/controllers/websocket_controller.py
-
-import logging
+import logging, asyncio
+from concurrent.futures import ThreadPoolExecutor
 from fastapi import WebSocket, WebSocketDisconnect
-import numpy as np
-import cv2
-
-# CORREÇÃO: O nome da classe é YoloService (e não YOLOService)
-# Também vamos importar a instância 'yolo_service' que já está carregada.
+import numpy as np, cv2
 from system.services.yolo_service import yolo_service
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+_executor = ThreadPoolExecutor(max_workers=2)  # ajuste se tiver GPU boa
 
+def _decode_and_infer(jpeg_bytes: bytes):
+    nparr = np.frombuffer(jpeg_bytes, np.uint8)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    if frame is None:
+        return None
+    # chama YOLO em resolução menor (ganho gigante de FPS)
+    results = yolo_service.model(frame, verbose=False, imgsz=640)
+    annotated = results[0].plot()
+    ok, buf = cv2.imencode(".jpg", annotated, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+    return buf.tobytes() if ok else None
 
 class WebSocketController:
     async def handle_websocket_connection(self, websocket: WebSocket):
         await websocket.accept()
-        logger.info("Cliente WebSocket conectado.")
-
         if not yolo_service.is_model_loaded():
-            logger.warning("Conexão WebSocket recebida, mas o modelo YOLO não está carregado.")
-            await websocket.send_text("ERRO: Modelo de análise não está disponível.")
-            await websocket.close()
-            return
-
+            await websocket.send_text("ERRO: modelo indisponível")
+            await websocket.close(); return
         try:
+            loop = asyncio.get_running_loop()
             while True:
-                # Recebe os bytes da imagem do cliente
-                bytes_data = await websocket.receive_bytes()
-
-                # Converte os bytes para uma imagem que o OpenCV possa usar
-                nparr = np.frombuffer(bytes_data, np.uint8)
-                frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-                if frame is None:
+                data = await websocket.receive_bytes()
+                # processa fora do loop
+                out = await loop.run_in_executor(_executor, _decode_and_infer, data)
+                if out is None:
                     continue
-
-                # Processa o frame com o modelo YOLO
-                results = yolo_service.model(frame, verbose=False)
-
-                # Anota o frame com as deteções
-                annotated_frame = results[0].plot()
-
-                # Codifica o frame anotado para enviar de volta ao cliente
-                _, buffer = cv2.imencode('.jpg', annotated_frame)
-
-                # Envia a imagem processada de volta
-                await websocket.send_bytes(buffer.tobytes())
-
+                # se cliente estiver lento, dropa em vez de travar
+                if websocket.client_state.name == "CONNECTED":
+                    await websocket.send_bytes(out)
         except WebSocketDisconnect:
-            logger.info("Cliente WebSocket desconectado.")
+            logger.info("WS desconectado")
         except Exception as e:
-            logger.error(f"Erro na conexão WebSocket: {e}")
-            await websocket.close()
-
+            logger.exception("WS erro: %s", e)
+            try: await websocket.close()
+            except: pass
 
 websocket_controller = WebSocketController()

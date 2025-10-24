@@ -153,6 +153,7 @@ Executa análise completa com:
 }
 ```
 
----
+RODAR docker-compose que está na pasta db
 
+---
 

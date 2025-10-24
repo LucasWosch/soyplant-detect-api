@@ -15,7 +15,7 @@ sys.path.insert(0, str(current_dir))
 from system.database import engine, Base
 from system.controllers.video_controller import video_controller
 from system.controllers.websocket_controller import websocket_controller
-from system.routes import auth_routes, video_routes, public_routes
+from system.routes import auth_routes, video_routes, public_routes, webrtc_routes
 
 # Inicialização da API
 app = FastAPI(
@@ -78,6 +78,7 @@ async def on_startup():
 app.include_router(public_routes.router)
 app.include_router(auth_routes.router)
 app.include_router(video_routes.router)
+app.include_router(webrtc_routes.router)
 
 
 # Endpoint WebSocket

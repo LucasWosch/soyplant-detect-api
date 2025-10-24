@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>WebRTC YOLO Test</title>
+  <style>
+    video { width: 480px; height: auto; background:#000; }
+    #row { display:flex; gap: 16px; }
+  </style>
+</head>
+<body>
+  <h1>WebRTC -> YOLO -> WebRTC</h1>
+  <div id="row">
+    <div>
+      <h3>Local (Webcam)</h3>
+      <video id="localVideo" autoplay playsinline muted></video>
+    </div>
+    <div>
+      <h3>Remoto (Processado pelo servidor)</h3>
+      <video id="remoteVideo" autoplay playsinline></video>
+    </div>
+  </div>
+  <button id="startBtn">Iniciar</button>
+  <button id="stopBtn">Parar</button>
+
+  <script>
+    const apiBase = "http://localhost:8000"; // ajuste se necessário
+    let pc, localStream;
+
+    async function start() {
+      // 1) Captura da webcam
+      localStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 } },
+        audio: false
+      });
+      document.getElementById("localVideo").srcObject = localStream;
+
+      // 2) Cria RTCPeerConnection + STUN
+      pc = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
+
+      // 3) Mostra stream remoto
+      pc.ontrack = (ev) => {
+        if (ev.streams && ev.streams[0]) {
+          document.getElementById("remoteVideo").srcObject = ev.streams[0];
+        } else {
+          // Safari às vezes entrega sem stream
+          const inbound = new MediaStream();
+          inbound.addTrack(ev.track);
+          document.getElementById("remoteVideo").srcObject = inbound;
+        }
+      };
+
+      // 4) Adiciona trilhas locais (vídeo)
+      localStream.getTracks().forEach((t) => pc.addTrack(t, localStream));
+
+      // (Opcional) Preferir VP8 (mais compatível em servidores)
+      const transceivers = pc.getTransceivers();
+      for (const tr of transceivers) {
+        if (tr.sender && tr.sender.getCapabilities) {
+          const caps = RTCRtpSender.getCapabilities("video");
+          if (caps && caps.codecs) {
+            // Tenta dar preferência ao VP8
+            const vp8 = caps.codecs.find(c => c.mimeType === "video/VP8");
+            if (vp8) {
+              tr.setCodecPreferences([vp8, ...caps.codecs.filter(c => c !== vp8)]);
+            }
+          }
+        }
+      }
+
+      // 5) Cria Offer local
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      // 6) Envia Offer para o servidor e recebe Answer
+      const resp = await fetch(`${apiBase}/webrtc/offer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sdp: offer.sdp, type: offer.type })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.text();
+        throw new Error(`Offer falhou: ${resp.status} - ${err}`);
+      }
+
+      const answer = await resp.json();
+      await pc.setRemoteDescription(answer);
+    }
+
+    async function stop() {
+      if (pc) {
+        pc.getSenders().forEach(s => { try { s.track && s.track.stop(); } catch(e){} });
+        pc.getReceivers().forEach(r => { try { r.track && r.track.stop(); } catch(e){} });
+        await pc.close();
+        pc = null;
+      }
+      if (localStream) {
+        localStream.getTracks().forEach(t => t.stop());
+        localStream = null;
+      }
+      document.getElementById("localVideo").srcObject = null;
+      document.getElementById("remoteVideo").srcObject = null;
+    }
+
+    document.getElementById("startBtn").onclick = start;
+    document.getElementById("stopBtn").onclick = stop;
+  </script>
+</body>
+</html>

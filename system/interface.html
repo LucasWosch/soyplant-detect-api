@@ -485,7 +485,9 @@
                     loadDashboardStats();
 
                 } else {
-                    showNotification('Falha na autenticação. Verifique as suas credenciais.', 'error');
+                    // CORREÇÃO: Ler o JSON de erro e acessar a propriedade 'error'
+                    const errorData = await response.json();
+                    showNotification('Falha na autenticação: ' + errorData.error, 'error');
                 }
             } catch (error) {
                 showNotification('Erro de rede. A API está online?', 'error');
@@ -503,37 +505,57 @@
         }
 
         async function register() {
-            const username = document.getElementById('regUsername').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
+    const username = document.getElementById('regUsername').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+    const submitBtn = event.target; // Pega o botão que foi clicado
 
-            if (!username || !email || !password) {
-                showNotification('Por favor, complete todos os campos.', 'error');
-                return;
-            }
+    if (!username || !email || !password) {
+        showNotification('Por favor, complete todos os campos.', 'error');
+        return;
+    }
 
+    // 1. Desabilitar o botão para prevenir múltiplos cliques
+    submitBtn.disabled = true;
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A criar...';
+
+    try {
+        showNotification('A criar conta...', 'info');
+        const response = await fetch('http://localhost:8000/api/v1/registar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+
+        if (response.status === 201) {
+            showNotification('Conta criada com sucesso! Já pode fazer o login.', 'success');
+            showLoginForm();
+            document.getElementById('regUsername').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+        } else {
+            // 2. Verificação de segurança antes de acessar o erro
+            let errorMessage = 'Ocorreu um erro desconhecido.';
             try {
-                showNotification('A criar conta...', 'info');
-                const response = await fetch('http://localhost:8000/api/v1/registar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, email, password })
-                });
-
-                if (response.status === 201) {
-                    showNotification('Conta criada com sucesso! Já pode fazer o login.', 'success');
-                    showLoginForm();
-                    document.getElementById('regUsername').value = '';
-                    document.getElementById('regEmail').value = '';
-                    document.getElementById('regPassword').value = '';
-                } else {
-                    const error = await response.json();
-                    showNotification('Erro ao criar conta: ' + error.detail, 'error');
+                const errorData = await response.json();
+                if (errorData && errorData.error) {
+                    errorMessage = errorData.error;
                 }
-            } catch (error) {
-                showNotification('Erro de rede. Por favor, tente novamente.', 'error');
+            } catch (e) {
+                console.error("Falha ao fazer parse do JSON de erro:", e);
+                // Mantém a mensagem padrão
             }
+            showNotification('Erro ao criar conta: ' + errorMessage, 'error');
         }
+    } catch (error) {
+        showNotification('Erro de rede. Por favor, tente novamente.', 'error');
+    } finally {
+        // 3. Reabilitar o botão
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+    }
+}
 
         function logout() {
             currentUser = null;
@@ -675,8 +697,9 @@
                     loadDashboardStats();
                     showNotification('Análise concluída com sucesso!', 'success');
                 } else {
+                    // CORREÇÃO: Ler o JSON de erro e acessar a propriedade 'error'
                     const error = await response.json();
-                    showNotification('Falha na análise: ' + error.detail, 'error');
+                    showNotification('Falha na análise: ' + error.error, 'error');
                 }
             } catch (error) {
                 showNotification('Erro de rede durante a análise.', 'error');

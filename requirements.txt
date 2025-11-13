@@ -7,4 +7,4 @@ pillow==8.4.0          # Para manipulação de imagens no formato PIL
 python-multipart
 
 
-keras~=3.9.2
+keras==2.10.0

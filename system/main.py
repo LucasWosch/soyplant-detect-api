@@ -2,7 +2,7 @@
 
 import sys
 from pathlib import Path
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -16,6 +16,9 @@ from system.database import engine, Base
 from system.controllers.video_controller import video_controller
 from system.controllers.websocket_controller import websocket_controller
 from system.routes import auth_routes, video_routes, public_routes, webrtc_routes
+# Importações para o Tratamento de Erros
+from system.exceptions import AppException
+from system.models.pydantic_models import ErrorResponse
 
 # Inicialização da API
 app = FastAPI(
@@ -87,12 +90,25 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket_controller.handle_websocket_connection(websocket)
 
 
-# Manuseamento de Erros Globais
+# =====================================
+#   Manipulador de Erros Padronizados
+# =====================================
+@app.exception_handler(AppException)
+async def app_exception_handler(request: Request, exc: AppException):
+    """Captura exceções da aplicação e retorna um JSON padronizado."""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=ErrorResponse(error=exc.detail).dict()
+    )
+
+# Manipulador geral para erros inesperados
 @app.exception_handler(Exception)
-async def general_exception_handler(request, exc):
+async def general_exception_handler(request: Request, exc: Exception):
+    """Captura exceções genéricas e retorna um erro de servidor padrão."""
+    # Em produção, não exponha o detalhe de `exc`
     return JSONResponse(
         status_code=500,
-        content={"detail": "Ocorreu um erro interno no servidor."}
+        content=ErrorResponse(error="Ocorreu um erro interno no servidor.").dict()
     )
 
 

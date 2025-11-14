@@ -21,7 +21,7 @@ async def login(
 ):
     return await auth_controller.login(form_data, db)
 
-@router.post("/registar", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def registar_utilizador(
     user: UserCreate,
     db: AsyncSession = Depends(get_db_session)

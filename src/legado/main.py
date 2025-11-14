@@ -190,7 +190,7 @@ def playground():
         </div>
       </div>
 
-      <script>
+      <javascript>
         function isDataUrlImage(value) {
           return typeof value === 'string' && value.startsWith('data:image/');
         }
@@ -290,7 +290,7 @@ def playground():
             gallery.innerHTML = '<p class="muted">Erro ao carregar imagens.</p>';
           }
         }
-      </script>
+      </javascript>
     </body>
     </html>
     """

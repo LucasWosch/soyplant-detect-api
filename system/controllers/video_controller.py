@@ -1,3 +1,5 @@
+# system/controllers/video_controller.py
+
 import os
 import uuid
 from datetime import datetime
@@ -9,22 +11,24 @@ import logging
 from system.models.database_models import Utilizador, Analise
 from system.services.video_processing import process_video_file
 from system.services.yolo_service import yolo_service
-# ESTE IMPORT AGORA FUNCIONA CORRETAMENTE
 from system.utils.helpers import get_current_timestamp_iso
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+PROCESSED_DIR = "processed_videos"
+
+
 class VideoController:
     async def analyze_video(
-            self,
-            file: UploadFile,
-            latitude: float,
-            longitude: float,
-            local_texto: str,
-            db: AsyncSession,
-            current_user: Utilizador
+        self,
+        file: UploadFile,
+        latitude: float,
+        longitude: float,
+        local_texto: str,
+        db: AsyncSession,
+        current_user: Utilizador,
     ):
         if not file.content_type.startswith("video/"):
             raise HTTPException(
@@ -32,12 +36,14 @@ class VideoController:
                 detail="Tipo de ficheiro não suportado. Por favor, envie um vídeo.",
             )
 
+        # garante pasta
+        os.makedirs(PROCESSED_DIR, exist_ok=True)
+
         try:
             unique_filename = f"{uuid.uuid4()}_{file.filename}"
-            save_path = os.path.join("processed_videos", unique_filename)
+            save_path = os.path.join(PROCESSED_DIR, unique_filename)
 
-            os.makedirs("processed_videos", exist_ok=True)
-
+            # processa vídeo e salva versão processada em save_path
             contagem = await process_video_file(file, save_path)
 
             nova_analise = Analise(
@@ -48,29 +54,40 @@ class VideoController:
                 contagem_total_unicos=contagem,
                 latitude=latitude,
                 longitude=longitude,
-                local_texto=local_texto
+                local_texto=local_texto,
             )
             db.add(nova_analise)
             await db.commit()
             await db.refresh(nova_analise)
 
-            logger.info(f"Análise {nova_analise.id} concluída para o utilizador {current_user.username}.")
+            logger.info(
+                f"Análise {nova_analise.id} concluída para o utilizador "
+                f"{current_user.username}. Contagem: {contagem} pés únicos."
+            )
 
             return {
                 "id": nova_analise.id,
                 "message": "Vídeo processado com sucesso!",
-                "contagem_total_unicos": contagem
+                "contagem_total_unicos": contagem,
+                "video_salvo_em": save_path,
             }
 
+        except HTTPException:
+            # deixa passar HTTPException como está (status e detail)
+            raise
         except Exception as e:
             logger.error(f"Erro ao processar o vídeo: {e}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Não foi possível processar o vídeo. Erro: {str(e)}"
+                detail=f"Não foi possível processar o vídeo. Erro: {str(e)}",
             )
 
     async def get_user_history(self, db: AsyncSession, current_user: Utilizador):
-        query = select(Analise).where(Analise.utilizador_id == current_user.id).order_by(Analise.data_analise.desc())
+        query = (
+            select(Analise)
+            .where(Analise.utilizador_id == current_user.id)
+            .order_by(Analise.data_analise.desc())
+        )
         result = await db.execute(query)
         historico = result.scalars().all()
         return historico
@@ -83,7 +100,7 @@ class VideoController:
             "status": "operacional" if model_loaded else "degradado",
             "timestamp": get_current_timestamp_iso(),
             "model_loaded": model_loaded,
-            "model_info": model_info
+            "model_info": model_info,
         }
 
 

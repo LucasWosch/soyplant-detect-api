@@ -143,8 +143,6 @@ def draw_tracks(
         return
     for x1, y1, x2, y2, tid in tracks.astype(int):
         cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
-        cv2.putText(img, f"ID {int(tid)}", (x1, max(15, y1 - 5)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2, cv2.LINE_AA)
 
 
 def put_fps(img, fps_value: float, org=(10, 30)) -> None:

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCC | Análise de Culturas com Machine Learning</title>
+
+    <!-- Fonte e ícones -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS externo (AJUSTE AQUI) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="bg-effects">
+            <div class="gradient-orbs orb-1"></div>
+            <div class="gradient-orbs orb-2"></div>
+            <div class="gradient-orbs orb-3"></div>
+        </div>
+
+        <div class="auth-container" id="authContainer">
+            <div class="auth-card fade-in-up">
+                <!-- LOGIN -->
+                <div id="loginForm">
+                    <div class="auth-header">
+                        <button class="theme-toggle-auth" id="themeToggleAuth" title="Alternar tema">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <div class="auth-logo">
+                            <div class="auth-logo-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                        </div>
+                        <h1 class="auth-title">TCC</h1>
+                        <p class="auth-subtitle">Plataforma Empresarial com Machine Learning</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">NOME DE USUÁRIO</label>
+                        <input
+                            type="text"
+                            class="form-input"
+                            id="loginUsername"
+                            placeholder="Insira as suas credenciais"
+                            autocomplete="username"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SENHA</label>
+                        <div class="password-input-container">
+                            <input
+                                type="password"
+                                class="password-input"
+                                id="loginPassword"
+                                placeholder="••••••••"
+                                autocomplete="current-password"
+                            >
+                            <button type="button" class="password-toggle" id="loginPasswordToggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="login()">
+                        <i class="fas fa-lock-open"></i> Entrar
+                    </button>
+                    <div class="auth-toggle">
+                        <p class="auth-toggle-text">Novo na plataforma?</p>
+                        <a href="#" class="auth-link" onclick="showRegisterForm()">
+                            <i class="fas fa-user-plus"></i> Criar Conta
+                        </a>
+                    </div>
+                </div>
+
+                <!-- REGISTRO -->
+                <div id="registerForm" style="display: none;">
+                    <div class="auth-header">
+                        <button class="theme-toggle-auth" id="themeToggleAuthRegister" title="Alternar tema">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <div class="auth-logo">
+                            <div class="auth-logo-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                        </div>
+                        <h1 class="auth-title">CRIAR CONTA</h1>
+                        <p class="auth-subtitle">Junte-se à plataforma</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">NOME DE USUÁRIO</label>
+                        <input
+                            type="text"
+                            class="form-input"
+                            id="regUsername"
+                            placeholder="Escolha o seu nome de usuário"
+                            autocomplete="username"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">EMAIL</label>
+                        <input
+                            type="email"
+                            class="form-input"
+                            id="regEmail"
+                            placeholder="email@corporativo.com"
+                            autocomplete="email"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SENHA</label>
+                        <div class="password-input-container">
+                            <input
+                                type="password"
+                                class="password-input"
+                                id="regPassword"
+                                placeholder="Crie uma senha segura"
+                                autocomplete="new-password"
+                            >
+                            <button type="button" class="password-toggle" id="regPasswordToggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="register()">
+                        <i class="fas fa-shield-alt"></i> Criar Conta
+                    </button>
+                    <div class="auth-toggle">
+                        <p class="auth-toggle-text">Já tem uma conta?</p>
+                        <a href="#" class="auth-link" onclick="showLoginForm()">
+                            <i class="fas fa-arrow-left"></i> Voltar para o Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP PRINCIPAL -->
+        <div class="main-app" id="mainApp">
+            <header class="header-premium">
+                <nav class="nav-premium">
+                    <div class="logo-premium">
+                        <div class="logo-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="logo-text">TCC II</div>
+                    </div>
+                    <div class="nav-actions">
+                        <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <div class="user-premium">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <div>
+                                <div style="font-weight: 600;" id="userName">Utilizador</div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">Membro Premium</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-header btn-logout" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                </nav>
+            </header>
+
+            <main class="main-content-ultra">
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('analyze', this)">
+                        <i class="fas fa-microscope"></i> Análise com Machine Learning
+                    </button>
+                    <button class="tab" onclick="showTab('history', this)">
+                        <i class="fas fa-database"></i> Histórico de Análises
+                    </button>
+                    <button class="tab" onclick="showTab('dashboard', this)">
+                        <i class="fas fa-chart-line"></i> Painel de Controle
+                    </button>
+                </div>
+
+                <!-- TAB: ANÁLISE -->
+                <div class="tab-content active" id="analyzeTab">
+                    <div class="two-column-layout">
+                        <!-- Upload / Análise vídeo -->
+                        <div class="glass-card fade-in-up">
+                            <div class="card-header-ultra">
+                                <div class="card-icon-ultra">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h2 class="card-title-ultra">Análise de Vídeo</h2>
+                            </div>
+
+                            <div class="upload-area-ultra" onclick="document.getElementById('fileInput').click()">
+                                <div class="upload-icon-ultra">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Arraste o Vídeo para Análise</h3>
+                                <p style="color: var(--gray);">Resolução 4K • Máx. 500MB • Todos os Formatos</p>
+                                <p style="color: var(--primary-light); font-size: 0.9rem; margin-top: 0.5rem;">
+                                    <i class="fas fa-robot"></i> Potenciado pela Rede Neural YOLOv11
+                                </p>
+                            </div>
+
+                            <input
+                                type="file"
+                                id="fileInput"
+                                class="file-input"
+                                accept=".mp4,.avi,.mov,.mkv"
+                                onchange="handleFileSelect(this.files)"
+                                style="display: none;"
+                            >
+
+                            <div style="margin-top: 3rem;">
+                                <h4 style="margin-bottom: 1.5rem; color: var(--light);">
+                                    <i class="fas fa-map-marker-alt"></i> Localização
+                                </h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                                    <div class="form-group">
+                                        <label class="form-label">Latitude</label>
+                                        <input
+                                            type="number"
+                                            class="form-input"
+                                            id="latitude"
+                                            step="any"
+                                            placeholder="-25.4284"
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Longitude</label>
+                                        <input
+                                            type="number"
+                                            class="form-input"
+                                            id="longitude"
+                                            step="any"
+                                            placeholder="-49.2733"
+                                        >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Localização</label>
+                                    <input
+                                        type="text"
+                                        class="form-input"
+                                        id="local"
+                                        placeholder="ID do Campo ou Nome do Local (Opcional)"
+                                    >
+                                    <button type="button" class="location-btn" onclick="autofillLocation()">
+                                        <i class="fas fa-location-arrow"></i> Usar Minha Localização Atual
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button
+                                class="btn btn-primary"
+                                onclick="analyzeVideo()"
+                                id="analyzeBtn"
+                                disabled
+                                style="margin-top: 2rem;"
+                            >
+                                <i class="fas fa-play"></i> Iniciar Processamento com Machine Learning
+                            </button>
+
+                            <div class="progress-ultra" id="progressContainer">
+                                <div class="progress-bar-ultra">
+                                    <div class="progress-fill-ultra" id="progressBar"></div>
+                                </div>
+                                <p
+                                    style="text-align: center; margin-top: 1rem; color: var(--gray);"
+                                    id="progressText"
+                                >
+                                    <i class="fas fa-cog fa-spin"></i> Processando na Rede Neural...
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Detecção em tempo real -->
+                        <div class="glass-card fade-in-up">
+                            <div class="card-header-ultra">
+                                <div class="card-icon-ultra">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <h2 class="card-title-ultra">Detecção em Tempo Real</h2>
+                            </div>
+
+                            <div style="text-align: center; padding: 2rem;">
+                                <div style="font-size: 5rem; color: var(--primary); margin-bottom: 1.5rem;">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Análise Instantânea</h3>
+                                <p style="color: var(--gray); margin-bottom: 2rem;">
+                                    Ative a câmera para análise em tempo real com detecção automática de plantas.
+                                </p>
+                                <button class="btn btn-primary" onclick="startRealtimeDetection()">
+                                    <i class="fas fa-play"></i> Iniciar Deteção em Tempo Real
+                                </button>
+                            </div>
+
+                            <div
+                                style="
+                                    background: var(--glass);
+                                    border-radius: 20px;
+                                    padding: 1.5rem;
+                                    margin-top: 2rem;
+                                    border: 1px solid rgba(0, 212, 170, 0.2);
+                                "
+                            >
+                                <h4 style="color: var(--primary); margin-bottom: 1rem;">
+                                    <i class="fas fa-info-circle"></i> Como funciona
+                                </h4>
+                                <ul style="color: var(--gray); padding-left: 1.5rem;">
+                                    <li>Ative a câmera do seu dispositivo</li>
+                                    <li>O sistema processa cada frame em tempo real</li>
+                                    <li>Resultados instantâneos com contagem de plantas</li>
+                                    <li>Ideal para inspeções no campo</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="results-ultra fade-in-up" id="resultsContainer">
+                        <div class="result-header-ultra">
+                            <h2
+                                style="
+                                    font-size: 2rem;
+                                    font-weight: 700;
+                                    background: linear-gradient(135deg, var(--white), var(--primary-light));
+                                    -webkit-background-clip: text;
+                                    -webkit-text-fill-color: transparent;
+                                "
+                            >
+                                Análise Concluída
+                            </h2>
+                            <div class="plant-count-ultra" id="plantCount">0</div>
+                        </div>
+                        <div id="resultsContent"></div>
+                    </div>
+                </div>
+
+                <!-- TAB: HISTÓRICO -->
+                <div class="tab-content" id="historyTab">
+                    <div class="glass-card fade-in-up">
+                        <div class="card-header-ultra">
+                            <div class="card-icon-ultra">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h2 class="card-title-ultra">Histórico de Análises</h2>
+                        </div>
+
+                        <div class="date-filter">
+                            <label style="color: var(--light); font-weight: 600;">Filtrar por data:</label>
+                            <input type="date" class="date-input" id="startDate">
+                            <span style="color: var(--gray);">até</span>
+                            <input type="date" class="date-input" id="endDate">
+                            <button class="filter-btn" onclick="filterByDate()">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                            <button class="btn-header" onclick="clearDateFilter()">
+                                <i class="fas fa-times"></i> Limpar
+                            </button>
+                        </div>
+
+                        <div class="history-filter">
+                            <input
+                                type="text"
+                                class="filter-input"
+                                id="historySearch"
+                                placeholder="Buscar por nome do arquivo, localização..."
+                            >
+                            <button class="filter-btn" onclick="filterHistory()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+
+                        <div id="historyList">
+                            <p style="text-align: center; color: var(--gray); padding: 3rem;">
+                                Nenhum histórico de análise encontrado. Comece por analisar o seu primeiro vídeo.
+                            </p>
+                        </div>
+
+                        <div class="pagination" id="paginationContainer" style="display: none;">
+                            <button class="pagination-btn" id="prevPageBtn" onclick="changePage(-1)">
+                                <i class="fas fa-chevron-left"></i> Anterior
+                            </button>
+                            <span class="pagination-info" id="pageInfo">Página 1 de 1</span>
+                            <button class="pagination-btn" id="nextPageBtn" onclick="changePage(1)">
+                                Próxima <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: DASHBOARD -->
+                <div class="tab-content" id="dashboardTab">
+                    <div class="glass-card fade-in-up">
+                        <div class="card-header-ultra">
+                            <div class="card-icon-ultra">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h2 class="card-title-ultra">Painel de Desempenho</h2>
+                        </div>
+
+                        <div
+                            style="
+                                display: grid;
+                                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                                gap: 1.5rem;
+                                margin-top: 2rem;
+                            "
+                        >
+                            <div
+                                style="
+                                    background: var(--glass);
+                                    padding: 2rem;
+                                    border-radius: 20px;
+                                    text-align: center;
+                                    border: 1px solid rgba(255, 255, 255, 0.1);
+                                "
+                            >
+                                <div
+                                    style="
+                                        font-size: 3rem;
+                                        font-weight: 800;
+                                        background: var(--gradient);
+                                        -webkit-background-clip: text;
+                                        -webkit-text-fill-color: transparent;
+                                        margin-bottom: 0.5rem;
+                                    "
+                                    id="totalAnalises"
+                                >0</div>
+                                <div
+                                    style="
+                                        color: var(--gray);
+                                        font-weight: 500;
+                                        text-transform: uppercase;
+                                        letter-spacing: 1px;
+                                        font-size: 0.9rem;
+                                    "
+                                >
+                                    Total de Análises
+                                </div>
+                            </div>
+
+                            <div
+                                style="
+                                    background: var(--glass);
+                                    padding: 2rem;
+                                    border-radius: 20px;
+                                    text-align: center;
+                                    border: 1px solid rgba(255, 255, 255, 0.1);
+                                "
+                            >
+                                <div
+                                    style="
+                                        font-size: 3rem;
+                                        font-weight: 800;
+                                        background: var(--gradient);
+                                        -webkit-background-clip: text;
+                                        -webkit-text-fill-color: transparent;
+                                        margin-bottom: 0.5rem;
+                                    "
+                                    id="totalPlantas"
+                                >0</div>
+                                <div
+                                    style="
+                                        color: var(--gray);
+                                        font-weight: 500;
+                                        text-transform: uppercase;
+                                        letter-spacing: 1px;
+                                        font-size: 0.9rem;
+                                    "
+                                >
+                                    Total de Plantas
+                                </div>
+                            </div>
+
+                            <div
+                                style="
+                                    background: var(--glass);
+                                    padding: 2rem;
+                                    border-radius: 20px;
+                                    text-align: center;
+                                    border: 1px solid rgba(255, 255, 255, 0.1);
+                                "
+                            >
+                                <div
+                                    style="
+                                        font-size: 3rem;
+                                        font-weight: 800;
+                                        background: var(--gradient);
+                                        -webkit-background-clip: text;
+                                        -webkit-text-fill-color: transparent;
+                                        margin-bottom: 0.5rem;
+                                    "
+                                    id="mediaPlantas"
+                                >0</div>
+                                <div
+                                    style="
+                                        color: var(--gray);
+                                        font-weight: 500;
+                                        text-transform: uppercase;
+                                        letter-spacing: 1px;
+                                        font-size: 0.9rem;
+                                    "
+                                >
+                                    Média por Análise
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

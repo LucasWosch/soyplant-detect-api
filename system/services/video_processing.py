@@ -3,14 +3,58 @@
 import os
 import cv2
 import tempfile
-from typing import Optional, Tuple, Set
+from typing import Set
 
 import numpy as np
-from fastapi import UploadFile, HTTPException, status
+from fastapi import UploadFile, HTTPException
 
 from system.services.yolo_service import yolo_service
 from system.utils.sort import Sort
 from system.utils.vis import draw_tracks
+
+# MoviePy para conversão do vídeo para formato compatível com browser
+from moviepy.editor import VideoFileClip
+
+
+def convert_to_browser_friendly_mp4(input_path: str, output_path: str) -> None:
+    """
+    Converte um vídeo qualquer em um MP4 compatível com navegadores
+    (H.264 + AAC) usando MoviePy (que internamente usa imageio-ffmpeg).
+
+    :param input_path: caminho do vídeo de entrada (gerado pelo OpenCV)
+    :param output_path: caminho final do vídeo convertido
+    """
+    if not os.path.exists(input_path):
+        raise HTTPException(
+            status_code=500,
+            detail=f"Vídeo temporário para conversão não encontrado: {input_path}"
+        )
+
+    output_dir = os.path.dirname(output_path) or "."
+    os.makedirs(output_dir, exist_ok=True)
+
+    try:
+        # MoviePy lê o vídeo de entrada
+        clip = VideoFileClip(input_path)
+
+        # Gera o MP4 final com H.264 + AAC
+        # (threads/preset podem ser ajustados se quiser mais desempenho/qualidade)
+        clip.write_videofile(
+            output_path,
+            codec="libx264",
+            audio_codec="aac",
+            preset="medium",
+            threads=4,
+            fps=clip.fps or 25
+        )
+
+        clip.close()
+    except Exception as e:
+        print("[convert_to_browser_friendly_mp4] Erro MoviePy:", e)
+        raise HTTPException(
+            status_code=500,
+            detail="Falha ao converter vídeo para formato compatível com navegador."
+        )
 
 
 async def process_video_file(
@@ -25,11 +69,12 @@ async def process_video_file(
       - Salva upload em arquivo temporário
       - Aplica YOLO + SORT frame a frame
       - Desenha as detecções no frame
-      - Grava o vídeo processado em `output_path`
+      - Grava o vídeo processado em ficheiro temporário (extensão .mp4)
+      - Converte esse ficheiro para MP4 (H.264 + AAC) em `output_path`
       - Retorna a contagem de IDs únicos rastreados (SORT)
 
     :param file: UploadFile vindo do FastAPI
-    :param output_path: caminho final do vídeo processado
+    :param output_path: caminho FINAL do vídeo processado (compatível com browser)
     :param imgsz: tamanho máximo do lado maior para inferência
     :param conf_thres: threshold de confiança do YOLO
     :param iou_thres: threshold de IoU do YOLO
@@ -38,15 +83,29 @@ async def process_video_file(
 
     if not yolo_service.is_model_loaded():
         raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            status_code=503,
             detail="Modelo YOLO não está carregado."
         )
 
-    # Garante pasta de saída
+    # Garante pasta de saída final
     output_dir = os.path.dirname(output_path) or "."
     os.makedirs(output_dir, exist_ok=True)
 
-    # 1) Grava o upload em ficheiro temporário
+    # -------------------------
+    # Caminho TEMPORÁRIO RAW
+    # -------------------------
+    # Mantemos a extensão do output (se não houver, forçamos .mp4)
+    base_out, ext_out = os.path.splitext(output_path)
+    if ext_out == "":
+        ext_out = ".mp4"
+
+    # Ex.: /.../processed_videos/webrtc_123.mp4  -> /.../processed_videos/webrtc_123_raw.mp4
+    temp_output_path = f"{base_out}_raw{ext_out}"
+
+    print("[process_video_file] output_path final:", output_path)
+    print("[process_video_file] temp_output_path:", temp_output_path)
+
+    # 1) Grava o upload em ficheiro temporário (entrada do OpenCV)
     try:
         suffix = os.path.splitext(file.filename or "")[1] or ".mp4"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -55,7 +114,7 @@ async def process_video_file(
             tmp.write(content)
     except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=500,
             detail=f"Falha ao salvar ficheiro temporário: {e}"
         )
 
@@ -67,7 +126,7 @@ async def process_video_file(
         except Exception:
             pass
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=400,
             detail="Não foi possível abrir o vídeo enviado."
         )
 
@@ -86,23 +145,27 @@ async def process_video_file(
         except Exception:
             pass
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=400,
             detail="Dimensões do vídeo inválidas."
         )
 
-    # 3) Cria VideoWriter para o vídeo processado
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # saída .mp4
-    writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    # 3) Cria VideoWriter para o vídeo processado TEMPORÁRIO
+    # Aqui ainda usamos mp4v porque o MoviePy/ffmpeg interno vai recodificar depois.
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    writer = cv2.VideoWriter(temp_output_path, fourcc, fps, (width, height))
 
     if not writer.isOpened():
+        print("[process_video_file] VideoWriter não abriu.")
+        print("[process_video_file] temp_output_path:", temp_output_path)
+        print("[process_video_file] fps:", fps, "size:", (width, height), "fourcc: mp4v")
         cap.release()
         try:
             os.remove(tmp_path)
         except Exception:
             pass
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Não foi possível criar o vídeo de saída."
+            status_code=500,
+            detail="Não foi possível criar o vídeo de saída temporário."
         )
 
     # 4) Tracker SORT e conjunto de IDs únicos
@@ -129,7 +192,6 @@ async def process_video_file(
 
             try:
                 # YOLO (modelo Ultralytics)
-                # Aqui assumindo que yolo_service.model é um objeto YOLO do ultralytics
                 results = yolo_service.model(
                     img_infer,
                     conf=conf_thres,
@@ -177,14 +239,26 @@ async def process_video_file(
             # Desenha as caixas no frame
             draw_tracks(frame, tracks, color=(255, 200, 0))
 
-            # Escreve frame processado no vídeo de saída
+            # Escreve frame processado no vídeo de saída TEMPORÁRIO
             writer.write(frame)
 
     finally:
         cap.release()
         writer.release()
+        # remove o vídeo de upload original
         try:
             os.remove(tmp_path)
+        except Exception:
+            pass
+
+    # 5) Converte o vídeo TEMPORÁRIO para um MP4 compatível com browser em output_path
+    try:
+        convert_to_browser_friendly_mp4(temp_output_path, output_path)
+    finally:
+        # remove o temporário do OpenCV em qualquer caso
+        try:
+            if os.path.exists(temp_output_path):
+                os.remove(temp_output_path)
         except Exception:
             pass
 

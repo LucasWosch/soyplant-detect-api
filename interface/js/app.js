@@ -639,6 +639,7 @@ async function openHistoryVideoModal(analiseId) {
                         <i class="fas fa-sync fa-spin camera-icon"></i>
                         <p>Carregando vídeo processado...</p>
                     </div>
+
                     <video
                         id="historyVideoPlayer"
                         class="video-element"
@@ -655,13 +656,19 @@ async function openHistoryVideoModal(analiseId) {
     const statusEl = document.getElementById('historyVideoStatus');
     const videoEl = document.getElementById('historyVideoPlayer');
 
+    const url = `${apiBase}/api/v1/historico/${analiseId}/video`;
+    console.log("[History Video] Requisitando:", url);
+
     try {
-        const resp = await fetch(`${apiBase}/api/v1/historico/${analiseId}/video`, {
+        const resp = await fetch(url, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
+
+        console.log("[History Video] Status:", resp.status);
+        console.log("[History Video] Content-Type (header):", resp.headers.get('content-type'));
 
         if (!resp.ok) {
             const txt = await resp.text();
@@ -674,14 +681,34 @@ async function openHistoryVideoModal(analiseId) {
         }
 
         const blob = await resp.blob();
-        const url = URL.createObjectURL(blob);
-        currentHistoryVideoUrl = url;
 
-        videoEl.src = url;
+        console.log("[History Video] Blob size:", blob.size);
+        console.log("[History Video] Blob type:", blob.type);
+
+
+
+        const objectUrl = URL.createObjectURL(blob);
+        currentHistoryVideoUrl = objectUrl;
+
+
+        // Atualiza o vídeo
+        videoEl.pause();
+        videoEl.removeAttribute('src'); // garante reset
+        videoEl.load();
+
+        videoEl.src = objectUrl;
         videoEl.style.display = 'block';
         statusEl.style.display = 'none';
-        videoEl.play().catch(() => {
-            // se o autoplay for bloqueado, não é erro grave
+
+        // Força o load antes do play
+        videoEl.load();
+
+        videoEl.addEventListener('error', (e) => {
+            console.error("[History Video] Erro no elemento <video>:", e, videoEl.error);
+        }, { once: true });
+
+        videoEl.play().catch(err => {
+            console.warn("[History Video] Autoplay bloqueado ou erro ao dar play:", err);
         });
 
     } catch (err) {

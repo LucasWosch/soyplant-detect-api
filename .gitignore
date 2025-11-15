@@ -6,6 +6,7 @@ src/legado/vggAnnotation/soja_detector_model.keras
 src/legado/multiDetectionV1/soja_detector_model.keras
 *keras
 runs/src/legado/yoloDetectionV1/yolov8l.pt
+/system/processed_videos/
 
 .idea/
 

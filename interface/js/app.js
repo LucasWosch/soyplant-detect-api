@@ -584,15 +584,124 @@ function displayHistory(history) {
                 <div style="font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem;">
                     ${item.contagem_total_unicos ?? '?'}
                 </div>
-                <div style="background: var(--primary); color: white; padding: 0.3rem 1rem; border-radius: 15px; font-size: 0.8rem; display: inline-block;">
-                    Concluído
+                <div style="margin-bottom: 0.5rem;">
+                    <div style="background: var(--primary); color: white; padding: 0.3rem 1rem; border-radius: 15px; font-size: 0.8rem; display: inline-block;">
+                        Concluído
+                    </div>
                 </div>
+
+                <button
+                    class="btn btn-header"
+                    style="margin-top: 0.3rem;"
+                    onclick="openHistoryVideoModal(${item.id})"
+                >
+                    <i class="fas fa-play-circle"></i> Ver vídeo
+                </button>
             </div>
         </div>
     `).join('');
 
     document.getElementById('paginationContainer').style.display =
         totalHistoryItems > itemsPerPage ? 'flex' : 'none';
+}
+
+let currentHistoryVideoUrl = null;
+
+async function openHistoryVideoModal(analiseId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        showNotification('Erro: você precisa estar logado para ver o vídeo.', 'error');
+        return;
+    }
+
+    // Remove modal anterior se existir
+    const existing = document.getElementById('historyVideoModal');
+    if (existing) {
+        existing.remove();
+        if (currentHistoryVideoUrl) {
+            URL.revokeObjectURL(currentHistoryVideoUrl);
+            currentHistoryVideoUrl = null;
+        }
+    }
+
+    const modalHTML = `
+        <div class="realtime-modal" id="historyVideoModal">
+            <div class="realtime-content">
+                <div class="realtime-header">
+                    <h2 class="realtime-title">
+                        <i class="fas fa-play-circle"></i> Vídeo da Análise
+                    </h2>
+                    <button class="realtime-close" onclick="closeHistoryVideoModal()">×</button>
+                </div>
+
+                <div style="margin-top: 1rem;">
+                    <div id="historyVideoStatus" class="camera-status" style="justify-content: center;">
+                        <i class="fas fa-sync fa-spin camera-icon"></i>
+                        <p>Carregando vídeo processado...</p>
+                    </div>
+                    <video
+                        id="historyVideoPlayer"
+                        class="video-element"
+                        style="display: none; max-height: 70vh; width: 100%; border-radius: 16px;"
+                        controls
+                    ></video>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    const statusEl = document.getElementById('historyVideoStatus');
+    const videoEl = document.getElementById('historyVideoPlayer');
+
+    try {
+        const resp = await fetch(`${apiBase}/api/v1/historico/${analiseId}/video`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!resp.ok) {
+            const txt = await resp.text();
+            console.error('[History Video] Erro ao obter vídeo:', resp.status, txt);
+            statusEl.innerHTML = `
+                <i class="fas fa-exclamation-circle camera-icon"></i>
+                <p>Não foi possível carregar o vídeo (${resp.status}).</p>
+            `;
+            return;
+        }
+
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        currentHistoryVideoUrl = url;
+
+        videoEl.src = url;
+        videoEl.style.display = 'block';
+        statusEl.style.display = 'none';
+        videoEl.play().catch(() => {
+            // se o autoplay for bloqueado, não é erro grave
+        });
+
+    } catch (err) {
+        console.error('[History Video] Erro inesperado:', err);
+        statusEl.innerHTML = `
+            <i class="fas fa-exclamation-circle camera-icon"></i>
+            <p>Erro inesperado ao carregar o vídeo.</p>
+        `;
+    }
+}
+
+function closeHistoryVideoModal() {
+    const modal = document.getElementById('historyVideoModal');
+    if (modal) {
+        modal.remove();
+    }
+    if (currentHistoryVideoUrl) {
+        URL.revokeObjectURL(currentHistoryVideoUrl);
+        currentHistoryVideoUrl = null;
+    }
 }
 
 function changePage(direction) {
@@ -653,7 +762,14 @@ function updateDashboardStats(history) {
     document.getElementById('mediaPlantas').textContent = mediaPlantas;
 }
 
+// ==============================
 // Funções de Detecção em Tempo Real (WebRTC)
+// ==============================
+
+peerConnection = null;
+localStream = null;
+// Garanta que apiBase esteja definido em algum lugar do seu app.js, por exemplo:
+// const apiBase = "http://localhost:8000";
 
 function startRealtimeDetection() {
     if (!localStorage.getItem('authToken')) {
@@ -715,7 +831,7 @@ function startRealtimeDetection() {
     if (!document.getElementById('realtimeModal')) {
         document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-        const localTexto = document.getElementById('local').value || currentLocation?.local_texto;
+        const localTexto = document.getElementById('local')?.value || currentLocation?.local_texto;
         if (localTexto) {
             document.getElementById('locationStats').style.display = 'block';
             document.getElementById('locationText').textContent = localTexto;
@@ -753,7 +869,7 @@ async function startCamera() {
         // Garante que não há conexão antiga
         stopCamera();
 
-        // 1) Captura da webcam (pode ajustar resolução se quiser)
+        // 1) Captura da webcam
         localStream = await navigator.mediaDevices.getUserMedia({
             video: {
                 width: { ideal: 1280 },
@@ -784,7 +900,7 @@ async function startCamera() {
         startBtn.disabled = true;
         stopBtn.disabled = false;
 
-        // 2) Conecta via WebRTC (igual ao exemplo que funciona)
+        // 2) Conecta via WebRTC
         await connectWebRTC(localStream);
 
     } catch (error) {
@@ -799,13 +915,13 @@ async function startCamera() {
 
 async function connectWebRTC(stream) {
     try {
-        // 1) Cria PeerConnection com STUN (mesmo do HTML simples)
+        // 1) Cria PeerConnection com STUN
         peerConnection = new RTCPeerConnection({
             iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
         });
         console.log('[WebRTC] Peer Connection criada.');
 
-        // 2) Quando chegar vídeo processado do servidor
+        // 2) Receber vídeo processado do servidor
         peerConnection.ontrack = (event) => {
             console.log('[WebRTC] Track remota recebida (vídeo processado)!');
             const remoteVideo = document.getElementById('processedVideo');
@@ -815,7 +931,6 @@ async function connectWebRTC(stream) {
             if (event.streams && event.streams[0]) {
                 remoteVideo.srcObject = event.streams[0];
             } else {
-                // fallback para navegadores mais chatos
                 const inbound = new MediaStream();
                 inbound.addTrack(event.track);
                 remoteVideo.srcObject = inbound;
@@ -826,13 +941,31 @@ async function connectWebRTC(stream) {
             if (processingStatus) processingStatus.style.display = 'none';
         };
 
+        // (Opcional) ouvir DataChannel "stats" vindo do servidor (contagem de pés)
+        peerConnection.ondatachannel = (event) => {
+            console.log('[WebRTC] DataChannel recebido:', event.channel.label);
+            const channel = event.channel;
+            if (channel.label === 'stats') {
+                channel.onmessage = (ev) => {
+                    try {
+                        const data = JSON.parse(ev.data);
+                        if (data.type === 'stats' && typeof data.sort_unique_ids === 'number') {
+                            updateDetectionStats(`Processando - NÚMERO DE PÉS DE SOJA: ${data.sort_unique_ids}`);
+                        }
+                    } catch (e) {
+                        console.warn('[WebRTC] Erro ao parsear mensagem do DataChannel:', e);
+                    }
+                };
+            }
+        };
+
         // 3) Adiciona trilhas locais (webcam)
         stream.getTracks().forEach((t) => {
             peerConnection.addTrack(t, stream);
             console.log('[WebRTC] Track de vídeo local adicionada.');
         });
 
-        // (Opcional) Preferir VP8 para maior compatibilidade
+        // (Opcional) Preferir VP8
         try {
             const caps = RTCRtpSender.getCapabilities && RTCRtpSender.getCapabilities('video');
             if (caps && caps.codecs) {
@@ -850,7 +983,7 @@ async function connectWebRTC(stream) {
             console.warn('[WebRTC] Não foi possível ajustar codec preferences (OK ignorar):', e);
         }
 
-        // 4) Observa estado da conexão (opcional)
+        // 4) Observa estado da conexão
         peerConnection.onconnectionstatechange = () => {
             const state = peerConnection.connectionState;
             console.log(`[WebRTC] Estado da conexão: ${state}`);
@@ -861,15 +994,29 @@ async function connectWebRTC(stream) {
             }
         };
 
-        // 5) Cria Offer local
+        // 5) Cria a OFFER (AGORA SIM: offer existe)
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
 
-        // 6) Envia Offer para o servidor e recebe Answer (igual ao HTML de teste)
+        // 6) Coleta metadados de localização
+        const lat = parseFloat(document.getElementById('latitude')?.value) || null;
+        const lon = parseFloat(document.getElementById('longitude')?.value) || null;
+        const texto = document.getElementById('local')?.value || null;
+
+        // 7) Envia Offer para o backend (FastAPI /webrtc/offer)
         const resp = await fetch(`${apiBase}/webrtc/offer`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sdp: offer.sdp, type: offer.type })
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({
+                sdp: offer.sdp,
+                type: offer.type,
+                latitude: lat,
+                longitude: lon,
+                local_texto: texto
+            })
         });
 
         if (!resp.ok) {
@@ -918,6 +1065,63 @@ function stopCamera() {
 
     updateUIAfterCameraStop();
     console.log('[WebRTC] Parada completada.');
+}
+
+function updateUIAfterCameraStop() {
+    const video = document.getElementById('webcamVideo');
+    const remoteVideo = document.getElementById('processedVideo');
+    const cameraStatus = document.getElementById('cameraStatus');
+    const processingStatus = document.getElementById('processingStatus');
+    const startBtn = document.getElementById('startCameraBtn');
+    const stopBtn = document.getElementById('stopCameraBtn');
+
+    if (video) {
+        video.srcObject = null;
+        video.style.display = 'none';
+    }
+    if (remoteVideo) {
+        remoteVideo.srcObject = null;
+        remoteVideo.style.display = 'none';
+    }
+    if (cameraStatus) cameraStatus.style.display = 'flex';
+    if (processingStatus) {
+        processingStatus.innerHTML = '<i class="fas fa-power-off camera-icon"></i><p>Processamento parado</p>';
+        processingStatus.style.display = 'flex';
+    }
+    if (startBtn) startBtn.disabled = false;
+    if (stopBtn) stopBtn.disabled = true;
+
+    updateDetectionStats('Sistema parado');
+}
+
+function updateDetectionStats(message) {
+    const statsElement = document.getElementById('detectionStats');
+    if (statsElement) {
+        const isActive = message.includes('Processando') || message.includes('Conectado');
+        const color = isActive
+            ? 'var(--primary)'
+            : (message.includes('Erro') || message.includes('perdida')
+                ? 'var(--accent)'
+                : 'var(--gray)');
+
+        let icon = 'fa-circle';
+        let spinClass = '';
+
+        if (isActive) {
+            icon = 'fa-sync';
+            spinClass = ' fa-spin';
+        } else if (message.includes('Erro') || message.includes('perdida')) {
+            icon = 'fa-exclamation-circle';
+        } else {
+            icon = 'fa-power-off';
+        }
+
+        if (message.includes('PÉS DE SOJA')) {
+            statsElement.innerHTML = `<i class="fas fa-leaf" style="color: ${color};"></i> ${message}`;
+        } else {
+            statsElement.innerHTML = `<i class="fas ${icon}${spinClass}" style="color: ${color};"></i> ${message}`;
+        }
+    }
 }
 
 function updateUIAfterCameraStop() {

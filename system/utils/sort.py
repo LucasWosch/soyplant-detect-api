@@ -202,7 +202,7 @@ def associate_detections_to_trackers(detections, trackers, iou_threshold=0.3):
 
 
 class Sort(object):
-    def __init__(self, max_age=1, min_hits=3, iou_threshold=0.3):
+    def __init__(self, max_age=30, min_hits=15, iou_threshold=0.3):
         """
         Sets key parameters for SORT
         """

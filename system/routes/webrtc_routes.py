@@ -63,7 +63,7 @@ class YoloVideoTransformTrack(MediaStreamTrack):
         super().__init__()
         self.track = source_track
         self.imgsz = imgsz
-        self.tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
+        self.tracker = Sort(max_age=30, min_hits=5, iou_threshold=0.3)
         self.last_time = None
         self.fps = 0.0
 

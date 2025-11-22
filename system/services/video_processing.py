@@ -3,6 +3,7 @@
 import os
 import cv2
 import tempfile
+import torch
 from typing import Set
 
 import numpy as np
@@ -14,6 +15,10 @@ from system.utils.vis import draw_tracks
 
 # MoviePy para conversão do vídeo para formato compatível com browser
 from moviepy.editor import VideoFileClip
+
+has_cuda = torch.cuda.is_available()
+_device = 0 if has_cuda else "cpu"
+_use_half = bool(has_cuda)
 
 
 def convert_to_browser_friendly_mp4(input_path: str, output_path: str) -> None:
@@ -60,9 +65,9 @@ def convert_to_browser_friendly_mp4(input_path: str, output_path: str) -> None:
 async def process_video_file(
     file: UploadFile,
     output_path: str,
-    imgsz: int = 640,
+    imgsz: int = 800,
     conf_thres: float = 0.25,
-    iou_thres: float = 0.45,
+    iou_thres: float = 0.40,
 ) -> int:
     """
     Processa o vídeo enviado:
@@ -169,7 +174,7 @@ async def process_video_file(
         )
 
     # 4) Tracker SORT e conjunto de IDs únicos
-    tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
+    tracker = Sort(max_age=30, min_hits=5, iou_threshold=0.3)
     seen_ids: Set[int] = set()
 
     try:
@@ -196,6 +201,8 @@ async def process_video_file(
                     img_infer,
                     conf=conf_thres,
                     iou=iou_thres,
+                    device=_device,
+                    half=_use_half,
                     verbose=False
                 )
 
